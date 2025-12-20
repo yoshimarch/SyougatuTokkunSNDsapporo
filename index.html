@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>正月特訓のまち - 2026</title>
+  <title>正月特訓の町 - 2026</title>
   <link href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap" rel="stylesheet">
   <style>
     * {
@@ -901,7 +901,6 @@
       overflow-y: auto;
       flex: 1;
       min-height: 60px;
-      max-height: 35vh;
     }
 
     .event-dialog-content p {
@@ -919,6 +918,7 @@
       border-top: 2px solid #333;
       flex-wrap: wrap;
       flex-shrink: 0;
+      background: #000;
     }
 
     .choice-btn {
@@ -958,54 +958,71 @@
       color: #fff;
     }
 
-    /* スマホ向け調整 */
+    /* スマホ向け - ダイアログを大きく表示 */
     @media screen and (max-width: 480px) {
       .event-dialog {
-        bottom: 5px;
-        width: 98%;
-        border-width: 2px;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        top: auto;
+        transform: none;
+        width: 100%;
+        max-width: 100%;
+        max-height: 85vh;
+        border-radius: 15px 15px 0 0;
+        border-width: 3px 3px 0 3px;
       }
       
       .event-dialog-header {
-        padding: 6px 10px;
+        padding: 10px 15px;
       }
       
-      .speaker-icon { font-size: 20px; }
-      .speaker-name { font-size: 12px; }
+      .speaker-icon { font-size: 22px; }
+      .speaker-name { font-size: 14px; }
       
       .event-dialog-content {
-        padding: 10px;
-        max-height: 30vh;
+        padding: 15px;
+        flex: 1;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
       }
       
       .event-dialog-content p {
-        font-size: 12px;
-        line-height: 1.5;
+        font-size: 14px;
+        line-height: 1.8;
       }
       
       .event-dialog-choices {
-        padding: 8px;
-        gap: 6px;
+        padding: 12px 15px 20px 15px;
+        gap: 10px;
+        flex-wrap: wrap;
       }
       
       .choice-btn {
-        padding: 10px 16px;
-        font-size: 12px;
-        min-width: 80px;
-        min-height: 40px;
+        padding: 14px 24px;
+        font-size: 14px;
+        min-width: 110px;
+        min-height: 50px;
+        flex: 1;
+        max-width: 45%;
       }
     }
 
     /* 小さいスマホ向け */
     @media screen and (max-width: 360px) {
+      .event-dialog {
+        max-height: 90vh;
+      }
+      
       .event-dialog-content p {
-        font-size: 11px;
+        font-size: 13px;
+        line-height: 1.7;
       }
       
       .choice-btn {
-        padding: 8px 12px;
-        font-size: 11px;
-        min-width: 70px;
+        padding: 12px 18px;
+        font-size: 13px;
+        min-width: 90px;
       }
     }
 
@@ -1611,7 +1628,7 @@
     <div class="title-box">
       <div class="year-badge">🐴 2026</div>
       <h1>正月特訓のまち　駿ポロ</h1>
-      <div class="subtitle">〜 合格を目指せ 〜</div>
+      <div class="subtitle">〜 合格を目指す冒険へ 〜</div>
     </div>
     <div class="controls-hint">
       <p>📱 画面の左右をタップで移動</p>
@@ -1652,7 +1669,7 @@
   <!-- BGM開始プロンプト -->
   <div class="bgm-prompt" id="bgmPrompt">
     <div class="bgm-prompt-content">
-      <div class="bgm-prompt-title">🎍 正月特訓のまち　駿ポロ 🎍</div>
+      <div class="bgm-prompt-title">🎍 正月特訓の町 🎍</div>
       <div class="bgm-prompt-horse">🐴</div>
       <div class="bgm-prompt-text">BGMを再生しますか？</div>
       <button class="bgm-prompt-btn" onclick="startWithBGM()">🔊 BGMあり</button>
@@ -1666,7 +1683,7 @@
     <div class="ending-message">🎍 2026年も頑張ろう！ 🎍</div>
     <div class="ending-submessage">
       正月特訓、お疲れさまでした！<br>
-      合格目指して馬力で駆け抜けよう！<br><br>
+      合格目指して馬力全開で駆け抜けよう！<br><br>
       🌸 春はもうすぐそこだ！ 🌸
     </div>
     <button class="ending-restart" onclick="location.reload()">🔄 もう一度最初から</button>
@@ -1903,10 +1920,10 @@
         showEventDialog({
           speaker: '道場長',
           icon: '🥋',
-          text: 'そこの者、待たれよ！\n\nここは過去問道場じゃ。\n\n正答率の集計に協力してくれぬか？\n\n君の結果を入力してもらえると、\n全体の傾向が見えて皆の役に立つのじゃ。',
+          text: 'そこの者、待たれよ！\n\nここは過去問道場じゃ。\n\n君が中３なら正答率の集計に協力してくれぬか？\n\n君の結果を入力してもらえると、\n全体の傾向が見えて皆の役に立つのじゃ。',
           choices: [
             { text: '協力する', action: dojoCooperateWarning },
-            { text: 'やらない', action: dojoDecline }
+            { text: 'やらない　または　私は小６', action: dojoDecline }
           ]
         });
       }, 500);
@@ -1916,7 +1933,7 @@
       showEventDialog({
         speaker: '道場長',
         icon: '🥋',
-        text: 'おお、ありがたい！\n\n⚠️ ただし、一つ大事なことを伝えておく。\n\n━━━━━━━━━━━━━━━\n【必ずニックネームで入力すること】\n実名は絶対に入れてはならぬぞ！\n━━━━━━━━━━━━━━━\n\nプライバシーを守ることが大切じゃ。',
+        text: 'おお、ありがたい！\n\n⚠️ ただし、一つ大事なことを伝えておく。\n\n━━━━\n【必ずニックネームで入力すること。ニックネームとパスワードは書き留めておくのだ。】\n実名は絶対に入れてはならぬぞ！\n━━━━━━━━━━━━━━━\n\nプライバシーを守ることが大切じゃ。',
         choices: [
           { text: 'わかった！入力する', action: () => {
             gameState.dojoTalked = true;
@@ -1961,7 +1978,7 @@
           showEventDialog({
             speaker: 'キタヤマ',
             icon: '✨',
-            text: 'Oh...?\n\nそこの君、ちょっと待ちたまえ。\n\n私の名はキタヤマ...\nこの町一番の英語講師さ。\n\nふふ、君のその目...\n英語の実力を高めたいと言っているね？',
+            text: 'Oh...?\n\nそこの君、ちょっと待ちたまえ。\n\n私の名は喜多山...\nこの町一番の英語講師さ。\n\nふふ、君のその目...\n英語の実力を高めたいと言っているね？',
             choices: [{ text: '...えっ', action: kitayamaAskTest }]
           });
         }, 1400);
