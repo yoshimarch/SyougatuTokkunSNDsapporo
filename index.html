@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>正月特訓のまち - 2026</title>
+  <title>正月特訓の町 - 2026</title>
   <link href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap" rel="stylesheet">
   <style>
     * {
@@ -1028,16 +1028,92 @@
       color: #fff;
       border: 2px solid #666;
     }
+
+    /* YouTube埋め込みモーダル */
+    .video-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.95);
+      z-index: 700;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .video-modal.active {
+      display: flex;
+    }
+
+    .video-modal-header {
+      color: #ffd93d;
+      font-size: 18px;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    .video-container {
+      width: 100%;
+      max-width: 800px;
+      aspect-ratio: 16 / 9;
+      background: #000;
+      border: 4px solid #ffd93d;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .video-container iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    /* 大きい動画モーダル（キタヤマ英語解説用） */
+    .video-modal.large .video-container {
+      max-width: 95vw;
+      max-height: 80vh;
+      width: 95vw;
+      height: 80vh;
+      aspect-ratio: auto;
+    }
+
+    .video-modal.large .video-modal-header {
+      font-size: 22px;
+      margin-bottom: 10px;
+    }
+
+    .video-close-btn {
+      margin-top: 20px;
+      background: #ffd93d;
+      border: none;
+      color: #000;
+      padding: 15px 40px;
+      font-family: 'DotGothic16', sans-serif;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    .video-close-btn:active {
+      transform: scale(0.95);
+      background: #fff;
+    }
+
+    .video-modal.large .video-close-btn {
+      margin-top: 15px;
+      padding: 18px 50px;
+      font-size: 18px;
+    }
   </style>
 </head>
 <body>
   <!-- BGM -->
   <audio id="bgm" loop>
-    <!-- ここにBGMファイルのパスを指定してください -->
-    <!-- 例: <source src="bgm.mp3" type="audio/mpeg"> -->
-    <!-- 例: <source src="bgm.mp4" type="audio/mp4"> -->
-    <!-- 例: <source src="https://example.com/bgm.mp3" type="audio/mpeg"> -->
-    <source src="bgm2.mp3" type="audio/mpeg">
+    <source src="bgm.mp3" type="audio/mpeg">
   </audio>
 
   <!-- BGMコントロール -->
@@ -1178,8 +1254,8 @@
   <div class="ui-overlay">
     <div class="title-box">
       <div class="year-badge">🐴 2026</div>
-      <h1>正月特訓のまち（駿台小中学部ver）</h1>
-      <div class="subtitle">〜 合格を目指せ 〜</div>
+      <h1>正月特訓の町</h1>
+      <div class="subtitle">〜 合格を目指す冒険へ 〜</div>
     </div>
     <div class="controls-hint">
       <p>📱 画面の左右をタップで移動</p>
@@ -1199,10 +1275,19 @@
     <div class="event-dialog-choices" id="eventChoices"></div>
   </div>
 
+  <!-- YouTube埋め込みモーダル -->
+  <div class="video-modal" id="videoModal">
+    <div class="video-modal-header" id="videoModalTitle">📺 動画を見る</div>
+    <div class="video-container">
+      <iframe id="videoIframe" src="" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+    </div>
+    <button class="video-close-btn" onclick="closeVideo()">✕ 閉じて進む</button>
+  </div>
+
   <!-- BGM開始プロンプト -->
   <div class="bgm-prompt" id="bgmPrompt">
     <div class="bgm-prompt-content">
-      <div class="bgm-prompt-title">🎍 正月特訓のまち 🎍</div>
+      <div class="bgm-prompt-title">🎍 正月特訓の町 🎍</div>
       <div class="bgm-prompt-horse">🐴</div>
       <div class="bgm-prompt-text">BGMを再生しますか？</div>
       <button class="bgm-prompt-btn" onclick="startWithBGM()">🔊 BGMあり</button>
@@ -1394,15 +1479,15 @@
 
     function kitatayaGreeting() {
       showEventDialog({
-        speaker: 'So much happy（喜多山さん）',
+        speaker: 'So much happy',
         icon: '🎉',
         text: 'やったー！聞いてくれるんだ！\n\n🎍 あけましておめでとうございます！ 🎍\n\n今年も皆さんにとって\nSo much happy な一年になりますように！\n\n受験生の皆さん、最後まで諦めずに\n頑張っていきましょう！！\n\n📺 新年のメッセージ動画も見ていってね！',
         choices: [{ text: '動画を見る！', action: () => {
           gameState.kitatayaTalked = true;
           gameState.canMove = true;
           closeEventDialog();
-          // So much happyのYouTubeリンク（実際のURLに変更）
-          window.open('https://youtu.be/Rl6WnNdDf4g', '_blank');
+          // 埋め込み動画を表示
+          openVideo(VIDEO_IDS.soMuchHappy, '🎉 So much happy 新年メッセージ', null);
         }}]
       });
     }
@@ -1466,7 +1551,7 @@
       showEventDialog({
         speaker: '道場長',
         icon: '🥋',
-        text: 'おお、ありがたい！\n\n⚠️ ただし、一つ大事なことを伝えておく。\n\n━━━\n【必ずニックネームで入力すること。パスワードはメモしておくこと。】\n実名は絶対に入れてはならぬぞ！\n━━━━━━━━━━━━━━━\n\nプライバシーを守ることが大切じゃ。',
+        text: 'おお、ありがたい！\n\n⚠️ ただし、一つ大事なことを伝えておく。\n\n━━━━━━━━━━━━━━━\n【必ずニックネームで入力すること】\n実名は絶対に入れてはならぬぞ！\n━━━━━━━━━━━━━━━\n\nプライバシーを守ることが大切じゃ。',
         choices: [
           { text: 'わかった！入力する', action: () => {
             gameState.dojoTalked = true;
@@ -1474,7 +1559,7 @@
             gameState.canMove = true;
             closeEventDialog();
             // 実際のリンクに変更
-            window.open('https://example.com/kakomon-input', '_blank');
+            window.open('https://text-order-project.web.app/', '_blank');
           }},
           { text: 'やっぱりやめる', action: dojoDecline }
         ]
@@ -1597,7 +1682,7 @@
       showEventDialog({
         speaker: 'キタヤマ',
         icon: '✨',
-        text: 'ふふ、そうかそうか...\n聞きたいか。よろしい。\n\n受験というのはね、受験の経験で得た「努力する力」「諦めない心」「計画を立てて実行する力」...これらは一生の財産になる。',
+        text: 'ふふ、そうかそうか...\n聞きたいか。よろしい。\n\n受験というのはね、結果だけがすべてじゃない。この経験で得た「努力する力」「諦めない心」「計画を立てて実行する力」...これらは一生の財産になる。',
         choices: [{ text: '...', action: kitayamaElementaryLongMessage2 }]
       });
     }
@@ -1606,7 +1691,7 @@
       showEventDialog({
         speaker: 'キタヤマ',
         icon: '💫',
-        text: '試験当日は緊張するだろう。でも、それは君だけじゃない。全員が同じ気持ちだ。深呼吸して、いつも通りの自分を出せばいい。分からない問題があってもあせるな。できる問題を確実に。',
+        text: '試験当日は緊張するだろう。でも、それは君だけじゃない。全員が同じ気持ちだ。深呼吸して、いつも通りの自分を出せばいい。分からない問題があっても焦るな。できる問題を確実に。',
         choices: [{ text: '...なるほど', action: kitayamaElementaryLongMessage3 }]
       });
     }
@@ -1669,16 +1754,13 @@
         speaker: 'キタヤマ',
         icon: '🌟',
         text: 'いい選択だ...\n\n私の美しい解説を堪能したまえ。\n\nではまた会おう...\n\n✨ Stay gorgeous ✨',
-        choices: [{ text: 'YouTubeへ', action: () => {
+        choices: [{ text: '動画を見る', action: () => {
           gameState.kitayamaEventDone = true;
           closeEventDialog();
-          // 実際のYouTubeリンクに変更
-          window.open('https://www.youtube.com/', '_blank');
-          
-          // エンディングへ
-          setTimeout(() => {
-            showEnding();
-          }, 1000);
+          // 大きい埋め込み動画を表示、閉じた後にエンディングへ
+          openVideo(VIDEO_IDS.kitayama, '✨ キタヤマの英語解説 ✨', () => {
+            setTimeout(() => showEnding(), 500);
+          }, true);  // true = 大きいモーダル
         }}]
       });
     }
@@ -1791,6 +1873,55 @@
     const bgmBtn = document.getElementById('bgmBtn');
     const bgmPrompt = document.getElementById('bgmPrompt');
     let bgmEnabled = false;
+
+    // ========== YouTube動画設定 ==========
+    const VIDEO_IDS = {
+      soMuchHappy: 'Rl6WnNdDf4g',  // So much happyの挨拶動画
+      kitayama: 'XpB7llDefjg'       // キタヤマの英語解説
+    };
+
+    // ========== 動画モーダル制御 ==========
+    const videoModal = document.getElementById('videoModal');
+    const videoIframe = document.getElementById('videoIframe');
+    const videoModalTitle = document.getElementById('videoModalTitle');
+    let videoCallback = null;
+
+    function openVideo(videoId, title, callback, isLarge = false) {
+      // BGMを一時停止
+      if (bgmEnabled && !bgm.paused) {
+        bgm.pause();
+      }
+      
+      videoModalTitle.textContent = title || '📺 動画を見る';
+      videoIframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+      
+      // 大きいモーダルかどうか
+      if (isLarge) {
+        videoModal.classList.add('large');
+      } else {
+        videoModal.classList.remove('large');
+      }
+      
+      videoModal.classList.add('active');
+      videoCallback = callback;
+    }
+
+    function closeVideo() {
+      videoIframe.src = '';
+      videoModal.classList.remove('active');
+      videoModal.classList.remove('large');
+      
+      // BGMを再開
+      if (bgmEnabled) {
+        bgm.play().catch(e => console.log('BGM再生エラー:', e));
+      }
+      
+      // コールバック実行
+      if (videoCallback) {
+        videoCallback();
+        videoCallback = null;
+      }
+    }
 
     function startWithBGM() {
       bgmEnabled = true;
