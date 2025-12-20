@@ -1509,7 +1509,7 @@
               gameState.canMove = true;
               closeEventDialog();
               // 実際のリンクに変更
-              window.open('https://yoshimarch.github.io/2026geisyunworldnews/', '_blank', 'noopener,noreferrer');
+              openInNewTab('https://yoshimarch.github.io/2026geisyunworldnews/');
             }},
             { text: 'やらない', action: () => {
               showEventDialog({
@@ -1559,7 +1559,7 @@
             gameState.canMove = true;
             closeEventDialog();
             // 実際のリンクに変更
-            window.open('https://text-order-project.web.app/', '_blank', 'noopener,noreferrer');
+            openInNewTab('https://text-order-project.web.app/');
           }},
           { text: 'やっぱりやめる', action: dojoDecline }
         ]
@@ -1879,6 +1879,17 @@
       soMuchHappy: 'Rl6WnNdDf4g',  // So much happyの挨拶動画
       kitayama: 'XpB7llDefjg'       // キタヤマの英語解説
     };
+
+    // ========== 安全に別タブで開く関数 ==========
+    function openInNewTab(url) {
+      const a = document.createElement('a');
+      a.href = url;
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
 
     // ========== 動画モーダル制御 ==========
     const videoModal = document.getElementById('videoModal');
