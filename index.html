@@ -1880,15 +1880,14 @@
       kitayama: 'XpB7llDefjg'       // キタヤマの英語解説
     };
 
-    // ========== 安全に別タブで開く関数 ==========
+    // ========== 安全に別ウィンドウで開く関数 ==========
     function openInNewTab(url) {
-      const a = document.createElement('a');
-      a.href = url;
-      a.target = '_blank';
-      a.rel = 'noopener noreferrer';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
+      // 新しいウィンドウとして開く（タブではなくウィンドウ）
+      const newWindow = window.open(url, '_blank', 'width=1024,height=768,menubar=yes,toolbar=yes,location=yes,status=yes,scrollbars=yes,resizable=yes');
+      // フォーカスを新しいウィンドウに
+      if (newWindow) {
+        newWindow.focus();
+      }
     }
 
     // ========== 動画モーダル制御 ==========
