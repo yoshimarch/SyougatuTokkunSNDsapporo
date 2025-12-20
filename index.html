@@ -1108,6 +1108,67 @@
       padding: 18px 50px;
       font-size: 18px;
     }
+
+    /* 外部サイト埋め込みモーダル */
+    .site-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.95);
+      z-index: 700;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 10px;
+    }
+
+    .site-modal.active {
+      display: flex;
+    }
+
+    .site-modal-header {
+      color: #ffd93d;
+      font-size: 18px;
+      margin-bottom: 10px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .site-container {
+      width: 100%;
+      height: calc(100vh - 120px);
+      background: #fff;
+      border: 4px solid #ffd93d;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .site-container iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .site-close-btn {
+      margin-top: 10px;
+      background: #ffd93d;
+      border: none;
+      color: #000;
+      padding: 15px 50px;
+      font-family: 'DotGothic16', sans-serif;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 5px;
+      flex-shrink: 0;
+    }
+
+    .site-close-btn:active {
+      transform: scale(0.95);
+      background: #fff;
+    }
   </style>
 </head>
 <body>
@@ -1282,6 +1343,15 @@
       <iframe id="videoIframe" src="" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
     </div>
     <button class="video-close-btn" onclick="closeVideo()">✕ 閉じて進む</button>
+  </div>
+
+  <!-- 外部サイト埋め込みモーダル -->
+  <div class="site-modal" id="siteModal">
+    <div class="site-modal-header" id="siteModalTitle">📝 外部サイト</div>
+    <div class="site-container">
+      <iframe id="siteIframe" src=""></iframe>
+    </div>
+    <button class="site-close-btn" onclick="closeSite()">✕ 閉じてゲームに戻る</button>
   </div>
 
   <!-- BGM開始プロンプト -->
@@ -1509,7 +1579,7 @@
               gameState.canMove = true;
               closeEventDialog();
               // 実際のリンクに変更
-              openInNewTab('https://yoshimarch.github.io/2026geisyunworldnews/');
+              openSite('https://yoshimarch.github.io/2026geisyunworldnews/', '⛩️ 時事問題クイズ 2025');
             }},
             { text: 'やらない', action: () => {
               showEventDialog({
@@ -1559,7 +1629,7 @@
             gameState.canMove = true;
             closeEventDialog();
             // 実際のリンクに変更
-            openInNewTab('https://text-order-project.web.app/');
+            openSite('https://text-order-project.web.app/', '🥋 過去問結果入力');
           }},
           { text: 'やっぱりやめる', action: dojoDecline }
         ]
@@ -1887,6 +1957,32 @@
       // フォーカスを新しいウィンドウに
       if (newWindow) {
         newWindow.focus();
+      }
+    }
+
+    // ========== 外部サイト埋め込みモーダル制御 ==========
+    const siteModal = document.getElementById('siteModal');
+    const siteIframe = document.getElementById('siteIframe');
+    const siteModalTitle = document.getElementById('siteModalTitle');
+
+    function openSite(url, title) {
+      // BGMを一時停止
+      if (bgmEnabled && !bgm.paused) {
+        bgm.pause();
+      }
+      
+      siteModalTitle.textContent = title || '📝 外部サイト';
+      siteIframe.src = url;
+      siteModal.classList.add('active');
+    }
+
+    function closeSite() {
+      siteIframe.src = '';
+      siteModal.classList.remove('active');
+      
+      // BGMを再開
+      if (bgmEnabled) {
+        bgm.play().catch(e => console.log('BGM再生エラー:', e));
       }
     }
 
