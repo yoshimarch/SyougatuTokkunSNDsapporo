@@ -1,0 +1,1745 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>正月特訓の町 - 2026</title>
+  <link href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    :root {
+      --snow-bg: #1a1a2e;
+      --ground-color: #e8f4f8;
+      --building-warm: #ffd93d;
+      --text-color: #fff;
+    }
+
+    body {
+      background: linear-gradient(180deg, #0f0f23 0%, #1a1a3e 50%, #2d2d5a 100%);
+      min-height: 100vh;
+      overflow: hidden;
+      font-family: 'DotGothic16', sans-serif;
+      image-rendering: pixelated;
+      touch-action: manipulation;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    /* 雪のアニメーション */
+    .snowflakes {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 100;
+      overflow: hidden;
+    }
+
+    .snowflake {
+      position: absolute;
+      color: #fff;
+      font-size: 1em;
+      text-shadow: 0 0 5px #fff;
+      animation: fall linear infinite;
+      opacity: 0.8;
+    }
+
+    @keyframes fall {
+      0% { transform: translateY(-10vh) translateX(0); opacity: 1; }
+      100% { transform: translateY(110vh) translateX(50px); opacity: 0.3; }
+    }
+
+    /* メインコンテナ */
+    .game-container {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* タップエリア（左右移動用） */
+    .tap-area {
+      position: fixed;
+      top: 0;
+      width: 50%;
+      height: 100%;
+      z-index: 50;
+      cursor: pointer;
+    }
+
+    .tap-area.left { left: 0; }
+    .tap-area.right { right: 0; }
+
+    .tap-indicator {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 40px;
+      opacity: 0;
+      transition: opacity 0.2s;
+      pointer-events: none;
+    }
+
+    .tap-area.left .tap-indicator { left: 20px; }
+    .tap-area.right .tap-indicator { right: 20px; }
+
+    .tap-area:active .tap-indicator { opacity: 0.5; }
+
+    /* 背景の山々 */
+    .mountains {
+      position: absolute;
+      bottom: 180px;
+      left: 0;
+      width: 200%;
+      height: 200px;
+      z-index: 1;
+    }
+
+    .mountain {
+      position: absolute;
+      bottom: 0;
+      width: 0;
+      height: 0;
+      border-style: solid;
+    }
+
+    .mountain-1 { left: 5%; border-width: 0 80px 120px 80px; border-color: transparent transparent #3d3d6b transparent; }
+    .mountain-2 { left: 20%; border-width: 0 120px 180px 120px; border-color: transparent transparent #2d2d5a transparent; }
+    .mountain-3 { left: 50%; border-width: 0 100px 150px 100px; border-color: transparent transparent #3d3d6b transparent; }
+    .mountain-4 { left: 75%; border-width: 0 90px 130px 90px; border-color: transparent transparent #2d2d5a transparent; }
+
+    /* 地面 */
+    .ground {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 180px;
+      background: linear-gradient(180deg, #c8e6f0 0%, #e8f4f8 30%, #fff 100%);
+      z-index: 2;
+    }
+
+    /* 町エリア */
+    .town {
+      position: absolute;
+      bottom: 60px;
+      left: 0;
+      width: 100%;
+      height: 300px;
+      z-index: 10;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      gap: 80px;
+      padding: 0 20px;
+    }
+
+    /* 建物共通スタイル */
+    .building {
+      position: relative;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+      filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
+      z-index: 20;
+    }
+
+    .building:active {
+      transform: translateY(-5px) scale(1.02);
+    }
+
+    .building-glow {
+      position: absolute;
+      bottom: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 120%;
+      height: 40px;
+      background: radial-gradient(ellipse at center, rgba(255, 217, 61, 0.4) 0%, transparent 70%);
+      opacity: 0.5;
+    }
+
+    /* 過去問道場 */
+    .dojo {
+      width: 140px;
+    }
+
+    .dojo-body {
+      width: 140px;
+      height: 110px;
+      background: linear-gradient(180deg, #8b4513 0%, #654321 100%);
+      border: 4px solid #3d2914;
+      position: relative;
+    }
+
+    .dojo-roof {
+      width: 160px;
+      height: 55px;
+      background: #1a1a2e;
+      position: relative;
+      left: -10px;
+      clip-path: polygon(0% 100%, 50% 0%, 100% 100%);
+    }
+
+    .dojo-roof::after {
+      content: '';
+      position: absolute;
+      top: 5px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 150px;
+      height: 50px;
+      background: #2d2d4a;
+      clip-path: polygon(0% 100%, 50% 0%, 100% 100%);
+    }
+
+    .dojo-window {
+      position: absolute;
+      width: 35px;
+      height: 45px;
+      background: var(--building-warm);
+      border: 3px solid #3d2914;
+      top: 20px;
+      box-shadow: 0 0 20px rgba(255, 217, 61, 0.6);
+    }
+
+    .dojo-window.left { left: 15px; }
+    .dojo-window.right { right: 15px; }
+
+    .dojo-door {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 40px;
+      height: 55px;
+      background: #2d1810;
+      border: 3px solid #1a0f0a;
+    }
+
+    .dojo-sign {
+      position: absolute;
+      top: -85px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #8b4513;
+      color: #fff;
+      padding: 8px 12px;
+      font-size: 12px;
+      border: 3px solid #3d2914;
+      white-space: nowrap;
+    }
+
+    /* 神社（時事問題） */
+    .shrine {
+      width: 150px;
+    }
+
+    .torii {
+      width: 120px;
+      height: 80px;
+      position: relative;
+      margin: 0 auto 10px;
+    }
+
+    .torii-top {
+      position: absolute;
+      top: 0;
+      left: -15px;
+      width: 150px;
+      height: 18px;
+      background: #c41e3a;
+      border-radius: 3px;
+    }
+
+    .torii-beam {
+      position: absolute;
+      top: 25px;
+      left: 0;
+      width: 120px;
+      height: 12px;
+      background: #c41e3a;
+    }
+
+    .torii-pillar {
+      position: absolute;
+      top: 18px;
+      width: 14px;
+      height: 62px;
+      background: #c41e3a;
+    }
+
+    .torii-pillar.left { left: 12px; }
+    .torii-pillar.right { right: 12px; }
+
+    .shrine-body {
+      width: 150px;
+      height: 90px;
+      background: linear-gradient(180deg, #f5f5f5 0%, #e0e0e0 100%);
+      border: 4px solid #bbb;
+      position: relative;
+    }
+
+    .shrine-roof {
+      width: 170px;
+      height: 50px;
+      background: #2d4a2d;
+      position: relative;
+      left: -10px;
+      clip-path: polygon(0% 100%, 10% 0%, 90% 0%, 100% 100%);
+    }
+
+    .shrine-door {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 45px;
+      height: 55px;
+      background: #8b4513;
+      border: 3px solid #654321;
+    }
+
+    .shrine-lantern {
+      position: absolute;
+      bottom: 65px;
+      width: 22px;
+      height: 32px;
+      background: #ff6b6b;
+      border-radius: 5px;
+      box-shadow: 0 0 20px rgba(255, 107, 107, 0.8);
+      animation: lanternGlow 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes lanternGlow {
+      0% { box-shadow: 0 0 15px rgba(255, 107, 107, 0.6); }
+      100% { box-shadow: 0 0 25px rgba(255, 107, 107, 1); }
+    }
+
+    .shrine-lantern.left { left: 15px; }
+    .shrine-lantern.right { right: 15px; }
+
+    .shrine-sign {
+      position: absolute;
+      top: -85px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #f5f5dc;
+      color: #333;
+      padding: 8px 12px;
+      font-size: 12px;
+      border: 3px solid #8b4513;
+      white-space: nowrap;
+    }
+
+    /* 木々 */
+    .tree {
+      position: absolute;
+      z-index: 5;
+    }
+
+    .tree-trunk {
+      width: 20px;
+      height: 40px;
+      background: #4a3728;
+      margin: 0 auto;
+    }
+
+    .tree-snow {
+      width: 60px;
+      height: 80px;
+      background: radial-gradient(ellipse at center, #e8f4f8 0%, #c8dae8 100%);
+      border-radius: 50%;
+      position: relative;
+      left: -20px;
+    }
+
+    .tree-snow::before {
+      content: '';
+      position: absolute;
+      top: -30px;
+      left: 10px;
+      width: 40px;
+      height: 50px;
+      background: radial-gradient(ellipse at center, #e8f4f8 0%, #c8dae8 100%);
+      border-radius: 50%;
+    }
+
+    .tree.t1 { left: 3%; bottom: 200px; transform: scale(0.8); }
+    .tree.t2 { right: 3%; bottom: 210px; transform: scale(0.9); }
+
+    /* プレイヤー（馬） */
+    .player {
+      position: absolute;
+      bottom: 100px;
+      left: 88%;
+      transform: translateX(-50%);
+      z-index: 60;
+      transition: left 0.2s ease-out;
+    }
+
+    .horse {
+      font-size: 56px;
+      filter: drop-shadow(0 5px 10px rgba(0,0,0,0.3));
+      animation: horseIdle 0.5s ease-in-out infinite alternate;
+    }
+
+    .horse.flip {
+      transform: scaleX(-1);
+    }
+
+    .horse.walking {
+      animation: horseWalk 0.15s steps(2) infinite;
+    }
+
+    @keyframes horseIdle {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-3px); }
+    }
+
+    @keyframes horseWalk {
+      0% { transform: translateY(0) rotate(-2deg); }
+      50% { transform: translateY(-5px) rotate(2deg); }
+      100% { transform: translateY(0) rotate(-2deg); }
+    }
+
+    /* UI要素 */
+    .ui-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 200;
+      padding: 15px;
+      pointer-events: none;
+    }
+
+    .title-box {
+      background: rgba(0, 0, 0, 0.85);
+      border: 4px solid #ffd93d;
+      padding: 12px 20px;
+      display: inline-block;
+      position: relative;
+    }
+
+    .title-box h1 {
+      color: #ffd93d;
+      font-size: 22px;
+      text-shadow: 2px 2px 0 #000;
+      margin-bottom: 3px;
+    }
+
+    .title-box .subtitle {
+      color: #fff;
+      font-size: 11px;
+    }
+
+    .title-box .year-badge {
+      position: absolute;
+      top: -12px;
+      right: -12px;
+      background: #c41e3a;
+      color: #fff;
+      padding: 4px 8px;
+      font-size: 11px;
+      border: 2px solid #ffd93d;
+    }
+
+    .controls-hint {
+      background: rgba(0, 0, 0, 0.7);
+      border: 2px solid #888;
+      padding: 8px 12px;
+      margin-top: 8px;
+      display: inline-block;
+    }
+
+    .controls-hint p {
+      color: #ccc;
+      font-size: 11px;
+      margin: 2px 0;
+    }
+
+    /* 星空 */
+    .stars {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 60%;
+      z-index: 0;
+    }
+
+    .star {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      background: #fff;
+      border-radius: 50%;
+      animation: twinkle 2s ease-in-out infinite;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
+    }
+
+    /* 街灯 */
+    .lamp-post {
+      position: absolute;
+      z-index: 8;
+    }
+
+    .lamp-pole {
+      width: 8px;
+      height: 80px;
+      background: #333;
+      margin: 0 auto;
+    }
+
+    .lamp-light {
+      width: 25px;
+      height: 20px;
+      background: #ffd93d;
+      border-radius: 5px 5px 10px 10px;
+      position: relative;
+      left: -8px;
+      box-shadow: 0 0 30px rgba(255, 217, 61, 0.8), 0 0 60px rgba(255, 217, 61, 0.4);
+    }
+
+    .lamp-post.l1 { left: 15%; bottom: 180px; }
+    .lamp-post.l2 { right: 15%; bottom: 180px; }
+
+    /* 門松 */
+    .kadomatsu {
+      position: absolute;
+      font-size: 45px;
+      z-index: 15;
+    }
+
+    .kadomatsu.k1 { left: 1%; bottom: 180px; }
+    .kadomatsu.k2 { right: 1%; bottom: 180px; }
+
+    /* ========== NPCキャラクター ========== */
+    .npc {
+      position: absolute;
+      z-index: 45;
+      cursor: pointer;
+    }
+
+    /* So much happy */
+    .npc-kitataya {
+      bottom: 95px;
+      right: 22%;
+    }
+
+    .kitataya-head {
+      width: 38px;
+      height: 38px;
+      background: #ffd5b5;
+      border-radius: 50%;
+      margin: 0 auto;
+      position: relative;
+      border: 2px solid #d4a574;
+    }
+
+    .kitataya-hair {
+      position: absolute;
+      top: -5px;
+      left: -3px;
+      width: 44px;
+      height: 28px;
+      background: #2d2d2d;
+      border-radius: 50% 50% 0 0;
+    }
+
+    .kitataya-eyes {
+      position: absolute;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 10px;
+    }
+
+    .kitataya-eye {
+      width: 5px;
+      height: 5px;
+      background: #000;
+      border-radius: 50%;
+    }
+
+    .kitataya-smile {
+      position: absolute;
+      bottom: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 14px;
+      height: 7px;
+      border: 2px solid #c41e3a;
+      border-top: none;
+      border-radius: 0 0 10px 10px;
+    }
+
+    .kitataya-body {
+      width: 32px;
+      height: 38px;
+      background: linear-gradient(180deg, #4a90d9 0%, #3a7bc8 100%);
+      margin: 0 auto;
+      border-radius: 5px 5px 0 0;
+      position: relative;
+    }
+
+    .kitataya-tie {
+      position: absolute;
+      top: 2px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+      border-top: 10px solid #c41e3a;
+    }
+
+    .npc-name {
+      position: absolute;
+      bottom: -28px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.85);
+      color: #7fff7f;
+      padding: 4px 10px;
+      font-size: 10px;
+      white-space: nowrap;
+      border: 2px solid #7fff7f;
+    }
+
+    /* キタヤマ (メタトン風) */
+    .npc-kitayama {
+      bottom: 95px;
+      left: -100px;
+      transition: left 1s ease-out;
+    }
+
+    .npc-kitayama.appear {
+      left: 8%;
+    }
+
+    .kitayama-head {
+      width: 34px;
+      height: 40px;
+      background: linear-gradient(180deg, #ffd5b5 0%, #f0c5a5 100%);
+      margin: 0 auto;
+      position: relative;
+      border: 2px solid #d4a574;
+      border-radius: 5px 5px 10px 10px;
+    }
+
+    .kitayama-hair {
+      position: absolute;
+      top: -10px;
+      left: -6px;
+      width: 46px;
+      height: 32px;
+      background: linear-gradient(180deg, #1a1a1a 0%, #333 100%);
+      clip-path: polygon(10% 100%, 0% 40%, 20% 0%, 80% 0%, 100% 40%, 90% 100%, 70% 80%, 50% 100%, 30% 80%);
+    }
+
+    .kitayama-eyes {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 12px;
+    }
+
+    .kitayama-eye {
+      width: 6px;
+      height: 3px;
+      background: #000;
+      border-radius: 0 0 3px 3px;
+    }
+
+    .kitayama-sparkle {
+      position: absolute;
+      top: 8px;
+      right: -2px;
+      font-size: 12px;
+      animation: sparkle 1s ease-in-out infinite;
+    }
+
+    @keyframes sparkle {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.3); }
+    }
+
+    .kitayama-smirk {
+      position: absolute;
+      bottom: 8px;
+      left: 55%;
+      transform: translateX(-50%);
+      width: 12px;
+      height: 5px;
+      border: 2px solid #333;
+      border-top: none;
+      border-left: none;
+      border-radius: 0 0 6px 0;
+    }
+
+    .kitayama-body {
+      width: 30px;
+      height: 48px;
+      background: linear-gradient(180deg, #1a1a1a 0%, #333 100%);
+      margin: 0 auto;
+      position: relative;
+      clip-path: polygon(0% 0%, 100% 0%, 90% 100%, 10% 100%);
+    }
+
+    .kitayama-collar {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 22px;
+      height: 10px;
+      background: #fff;
+      clip-path: polygon(0% 0%, 100% 0%, 80% 100%, 20% 100%);
+    }
+
+    .kitayama-legs {
+      display: flex;
+      justify-content: center;
+      gap: 5px;
+    }
+
+    .kitayama-leg {
+      width: 9px;
+      height: 16px;
+      background: #1a1a1a;
+    }
+
+    /* イベントオーバーレイ */
+    .event-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0);
+      z-index: 280;
+      pointer-events: none;
+      transition: background 0.3s;
+    }
+
+    .event-overlay.active {
+      background: rgba(0, 0, 0, 0.4);
+      pointer-events: auto;
+    }
+
+    /* イベントダイアログ */
+    .event-dialog {
+      position: fixed;
+      bottom: 60px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 94%;
+      max-width: 600px;
+      background: #000;
+      border: 4px solid #fff;
+      z-index: 350;
+      display: none;
+    }
+
+    .event-dialog.active {
+      display: block;
+      animation: dialogAppear 0.2s ease-out;
+    }
+
+    @keyframes dialogAppear {
+      0% { transform: translateX(-50%) scale(0.9); opacity: 0; }
+      100% { transform: translateX(-50%) scale(1); opacity: 1; }
+    }
+
+    .event-dialog-header {
+      background: #222;
+      padding: 10px 15px;
+      border-bottom: 2px solid #444;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .speaker-icon { font-size: 28px; }
+    .speaker-name { color: #ffd93d; font-size: 15px; }
+
+    .event-dialog-content {
+      padding: 18px;
+      min-height: 80px;
+    }
+
+    .event-dialog-content p {
+      color: #fff;
+      font-size: 15px;
+      line-height: 1.8;
+    }
+
+    .event-dialog-choices {
+      padding: 12px 18px;
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      border-top: 2px solid #333;
+      flex-wrap: wrap;
+    }
+
+    .choice-btn {
+      background: #222;
+      border: 3px solid #ffd93d;
+      color: #ffd93d;
+      padding: 14px 28px;
+      font-family: 'DotGothic16', sans-serif;
+      font-size: 15px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      min-width: 120px;
+    }
+
+    .choice-btn:active {
+      background: #ffd93d;
+      color: #000;
+      transform: scale(0.95);
+    }
+
+    .choice-btn.changing {
+      animation: buttonShake 0.4s ease;
+    }
+
+    @keyframes buttonShake {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-8px) rotate(-2deg); }
+      40% { transform: translateX(8px) rotate(2deg); }
+      60% { transform: translateX(-6px) rotate(-1deg); }
+      80% { transform: translateX(6px) rotate(1deg); }
+    }
+
+    .choice-btn.forced {
+      background: #c41e3a;
+      border-color: #ff6b6b;
+      color: #fff;
+    }
+
+    /* 感嘆符エフェクト */
+    .exclamation {
+      position: fixed;
+      font-size: 35px;
+      color: #ff0;
+      text-shadow: 0 0 10px #ff0, 2px 2px 0 #000;
+      animation: exclamationPop 0.5s ease-out;
+      z-index: 400;
+      pointer-events: none;
+    }
+
+    @keyframes exclamationPop {
+      0% { transform: scale(0) translateY(20px); opacity: 0; }
+      50% { transform: scale(1.4) translateY(-10px); opacity: 1; }
+      100% { transform: scale(1) translateY(0); opacity: 1; }
+    }
+
+    /* エンディング */
+    .ending-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0);
+      z-index: 500;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      opacity: 0;
+      transition: all 1s ease;
+    }
+
+    .ending-overlay.active {
+      background: rgba(0, 0, 0, 0.9);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .ending-horse {
+      font-size: 100px;
+      animation: endingSpin 2s linear infinite;
+      margin-bottom: 30px;
+    }
+
+    @keyframes endingSpin {
+      0% { transform: rotate(0deg) scale(1); }
+      25% { transform: rotate(90deg) scale(1.1); }
+      50% { transform: rotate(180deg) scale(1.2); }
+      75% { transform: rotate(270deg) scale(1.1); }
+      100% { transform: rotate(360deg) scale(1); }
+    }
+
+    .ending-message {
+      color: #ffd93d;
+      font-size: 32px;
+      text-align: center;
+      text-shadow: 3px 3px 0 #000;
+      animation: endingFade 1s ease-out 0.5s both;
+      padding: 0 20px;
+    }
+
+    .ending-submessage {
+      color: #fff;
+      font-size: 18px;
+      margin-top: 25px;
+      text-align: center;
+      line-height: 1.8;
+      animation: endingFade 1s ease-out 1.5s both;
+    }
+
+    @keyframes endingFade {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    .ending-restart {
+      margin-top: 50px;
+      background: #ffd93d;
+      color: #000;
+      border: none;
+      padding: 18px 50px;
+      font-family: 'DotGothic16', sans-serif;
+      font-size: 18px;
+      cursor: pointer;
+      animation: endingFade 1s ease-out 2.5s both;
+      border-radius: 5px;
+    }
+
+    .ending-restart:active {
+      transform: scale(0.95);
+      background: #fff;
+    }
+
+    /* BGMコントロール */
+    .bgm-control {
+      position: fixed;
+      top: 15px;
+      right: 15px;
+      z-index: 250;
+    }
+
+    .bgm-btn {
+      background: rgba(0, 0, 0, 0.7);
+      border: 2px solid #ffd93d;
+      color: #ffd93d;
+      padding: 8px 15px;
+      font-family: 'DotGothic16', sans-serif;
+      font-size: 12px;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: all 0.2s;
+    }
+
+    .bgm-btn:active {
+      background: #ffd93d;
+      color: #000;
+    }
+
+    .bgm-btn.playing {
+      background: rgba(255, 217, 61, 0.3);
+    }
+
+    /* BGM開始プロンプト */
+    .bgm-prompt {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 600;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      opacity: 1;
+      transition: opacity 0.5s;
+    }
+
+    .bgm-prompt.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .bgm-prompt-content {
+      text-align: center;
+    }
+
+    .bgm-prompt-title {
+      color: #ffd93d;
+      font-size: 28px;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 0 #000;
+    }
+
+    .bgm-prompt-horse {
+      font-size: 80px;
+      margin-bottom: 30px;
+      animation: horseIdle 0.5s ease-in-out infinite alternate;
+    }
+
+    .bgm-prompt-text {
+      color: #fff;
+      font-size: 14px;
+      margin-bottom: 30px;
+    }
+
+    .bgm-prompt-btn {
+      background: #ffd93d;
+      border: none;
+      color: #000;
+      padding: 18px 50px;
+      font-family: 'DotGothic16', sans-serif;
+      font-size: 18px;
+      cursor: pointer;
+      border-radius: 5px;
+      margin: 10px;
+      transition: transform 0.1s;
+    }
+
+    .bgm-prompt-btn:active {
+      transform: scale(0.95);
+    }
+
+    .bgm-prompt-btn.secondary {
+      background: #333;
+      color: #fff;
+      border: 2px solid #666;
+    }
+  </style>
+</head>
+<body>
+  <!-- BGM -->
+  <audio id="bgm" loop>
+    <!-- ここにBGMファイルのパスを指定してください -->
+    <!-- 例: <source src="bgm.mp3" type="audio/mpeg"> -->
+    <!-- 例: <source src="bgm.mp4" type="audio/mp4"> -->
+    <!-- 例: <source src="https://example.com/bgm.mp3" type="audio/mpeg"> -->
+    <source src="bgm.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- BGMコントロール -->
+  <div class="bgm-control" id="bgmControl">
+    <button class="bgm-btn" id="bgmBtn" onclick="toggleBGM()">🔇 BGM</button>
+  </div>
+
+  <!-- 星空 -->
+  <div class="stars" id="stars"></div>
+
+  <!-- 雪 -->
+  <div class="snowflakes" id="snowflakes"></div>
+
+  <!-- タップエリア -->
+  <div class="tap-area left" id="tapLeft">
+    <div class="tap-indicator">◀</div>
+  </div>
+  <div class="tap-area right" id="tapRight">
+    <div class="tap-indicator">▶</div>
+  </div>
+
+  <!-- イベントオーバーレイ -->
+  <div class="event-overlay" id="eventOverlay"></div>
+
+  <div class="game-container">
+    <!-- 山々 -->
+    <div class="mountains">
+      <div class="mountain mountain-1"></div>
+      <div class="mountain mountain-2"></div>
+      <div class="mountain mountain-3"></div>
+      <div class="mountain mountain-4"></div>
+    </div>
+
+    <!-- 木々 -->
+    <div class="tree t1">
+      <div class="tree-snow"></div>
+      <div class="tree-trunk"></div>
+    </div>
+    <div class="tree t2">
+      <div class="tree-snow"></div>
+      <div class="tree-trunk"></div>
+    </div>
+
+    <!-- 街灯 -->
+    <div class="lamp-post l1">
+      <div class="lamp-light"></div>
+      <div class="lamp-pole"></div>
+    </div>
+    <div class="lamp-post l2">
+      <div class="lamp-light"></div>
+      <div class="lamp-pole"></div>
+    </div>
+
+    <!-- 門松 -->
+    <div class="kadomatsu k1">🎍</div>
+    <div class="kadomatsu k2">🎍</div>
+
+    <!-- 地面 -->
+    <div class="ground"></div>
+
+    <!-- NPC: So much happy -->
+    <div class="npc npc-kitataya" id="npcKitataya">
+      <div class="kitataya-head">
+        <div class="kitataya-hair"></div>
+        <div class="kitataya-eyes">
+          <div class="kitataya-eye"></div>
+          <div class="kitataya-eye"></div>
+        </div>
+        <div class="kitataya-smile"></div>
+      </div>
+      <div class="kitataya-body">
+        <div class="kitataya-tie"></div>
+      </div>
+      <div class="npc-name">So much happy</div>
+    </div>
+
+    <!-- NPC: キタヤマ -->
+    <div class="npc npc-kitayama" id="npcKitayama">
+      <div class="kitayama-head">
+        <div class="kitayama-hair"></div>
+        <div class="kitayama-eyes">
+          <div class="kitayama-eye"></div>
+          <div class="kitayama-eye"></div>
+        </div>
+        <div class="kitayama-sparkle">✨</div>
+        <div class="kitayama-smirk"></div>
+      </div>
+      <div class="kitayama-body">
+        <div class="kitayama-collar"></div>
+      </div>
+      <div class="kitayama-legs">
+        <div class="kitayama-leg"></div>
+        <div class="kitayama-leg"></div>
+      </div>
+      <div class="npc-name">キタヤマ</div>
+    </div>
+
+    <!-- 町の建物 -->
+    <div class="town">
+      <!-- 過去問道場 -->
+      <div class="building dojo" id="buildingDojo">
+        <div class="building-glow"></div>
+        <div class="dojo-sign">🥋 過去問道場</div>
+        <div class="dojo-roof"></div>
+        <div class="dojo-body">
+          <div class="dojo-window left"></div>
+          <div class="dojo-window right"></div>
+          <div class="dojo-door"></div>
+        </div>
+      </div>
+
+      <!-- 神社（時事問題） -->
+      <div class="building shrine" id="buildingShrine">
+        <div class="building-glow"></div>
+        <div class="shrine-sign">⛩️ 時事問題神社</div>
+        <div class="torii">
+          <div class="torii-top"></div>
+          <div class="torii-beam"></div>
+          <div class="torii-pillar left"></div>
+          <div class="torii-pillar right"></div>
+        </div>
+        <div class="shrine-roof"></div>
+        <div class="shrine-body">
+          <div class="shrine-lantern left"></div>
+          <div class="shrine-lantern right"></div>
+          <div class="shrine-door"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- プレイヤー -->
+    <div class="player" id="player">
+      <div class="horse" id="horse">🐴</div>
+    </div>
+  </div>
+
+  <!-- UI -->
+  <div class="ui-overlay">
+    <div class="title-box">
+      <div class="year-badge">🐴 2026</div>
+      <h1>正月特訓の町</h1>
+      <div class="subtitle">〜 合格を目指す冒険へ 〜</div>
+    </div>
+    <div class="controls-hint">
+      <p>📱 画面の左右をタップで移動</p>
+      <p>🏠 建物やキャラをタップで会話</p>
+    </div>
+  </div>
+
+  <!-- イベントダイアログ -->
+  <div class="event-dialog" id="eventDialog">
+    <div class="event-dialog-header">
+      <span class="speaker-icon" id="speakerIcon">😊</span>
+      <span class="speaker-name" id="speakerName">???</span>
+    </div>
+    <div class="event-dialog-content">
+      <p id="eventText"></p>
+    </div>
+    <div class="event-dialog-choices" id="eventChoices"></div>
+  </div>
+
+  <!-- BGM開始プロンプト -->
+  <div class="bgm-prompt" id="bgmPrompt">
+    <div class="bgm-prompt-content">
+      <div class="bgm-prompt-title">🎍 正月特訓の町 🎍</div>
+      <div class="bgm-prompt-horse">🐴</div>
+      <div class="bgm-prompt-text">BGMを再生しますか？</div>
+      <button class="bgm-prompt-btn" onclick="startWithBGM()">🔊 BGMあり</button>
+      <button class="bgm-prompt-btn secondary" onclick="startWithoutBGM()">🔇 BGMなし</button>
+    </div>
+  </div>
+
+  <!-- エンディング -->
+  <div class="ending-overlay" id="endingOverlay">
+    <div class="ending-horse">🐴</div>
+    <div class="ending-message">🎍 2026年も頑張ろう！ 🎍</div>
+    <div class="ending-submessage">
+      正月特訓、お疲れさまでした！<br>
+      合格目指して駆け抜けよう！<br><br>
+      🌸 春はもうすぐそこだ！ 🌸
+    </div>
+    <button class="ending-restart" onclick="location.reload()">🔄 もう一度最初から</button>
+  </div>
+
+  <script>
+    // ========== ゲーム状態管理 ==========
+    // イベントトリガー位置（右から左へ）
+    // 88% スタート
+    // 72% So much happy
+    // 55% 神社
+    // 38% 道場
+    // 18% キタヤマ登場
+    
+    const gameState = {
+      playerX: 88,
+      canMove: true,
+      // イベントフラグ
+      kitatayaTalked: false,      // So much happyと話した
+      shrineTalked: false,        // 神社で話した
+      dojoTalked: false,          // 道場で話した
+      kitayamaAppeared: false,    // キタヤマ登場済み
+      kitayamaEventDone: false,   // キタヤマイベント完了
+      englishTestDone: false      // 英語テスト終わった設定
+    };
+
+    // トリガー位置
+    const TRIGGER = {
+      KITATAYA: 72,
+      SHRINE: 55,
+      DOJO: 38,
+      KITAYAMA: 18
+    };
+
+    // ========== DOM要素 ==========
+    const player = document.getElementById('player');
+    const horse = document.getElementById('horse');
+    const eventOverlay = document.getElementById('eventOverlay');
+    const eventDialog = document.getElementById('eventDialog');
+    const npcKitayama = document.getElementById('npcKitayama');
+    const endingOverlay = document.getElementById('endingOverlay');
+
+    let walkTimeout = null;
+    let moveInterval = null;
+
+    // ========== プレイヤー移動 ==========
+    function movePlayer(direction) {
+      if (!gameState.canMove) return;
+
+      const step = 2;
+      const oldX = gameState.playerX;
+
+      if (direction === 'left') {
+        const newX = gameState.playerX - step;
+        
+        // 各トリガーポイントのチェック（左に進む時）
+        // So much happy
+        if (!gameState.kitatayaTalked && oldX > TRIGGER.KITATAYA && newX <= TRIGGER.KITATAYA) {
+          triggerKitatayaEvent();
+          return;
+        }
+        // 神社
+        if (!gameState.shrineTalked && oldX > TRIGGER.SHRINE && newX <= TRIGGER.SHRINE) {
+          triggerShrineEvent();
+          return;
+        }
+        // 道場
+        if (!gameState.dojoTalked && oldX > TRIGGER.DOJO && newX <= TRIGGER.DOJO) {
+          triggerDojoEvent();
+          return;
+        }
+        // キタヤマ
+        if (!gameState.kitayamaAppeared && oldX > TRIGGER.KITAYAMA && newX <= TRIGGER.KITAYAMA) {
+          triggerKitayamaAppearance();
+          return;
+        }
+
+        if (newX >= 8) {
+          gameState.playerX = newX;
+          horse.classList.add('flip');
+        }
+      } else if (direction === 'right') {
+        if (gameState.playerX < 92) {
+          gameState.playerX += step;
+          horse.classList.remove('flip');
+        }
+      }
+
+      player.style.left = gameState.playerX + '%';
+      horse.classList.add('walking');
+      clearTimeout(walkTimeout);
+      walkTimeout = setTimeout(() => horse.classList.remove('walking'), 200);
+    }
+
+    // ========== タップ操作 ==========
+    function startMove(direction) {
+      movePlayer(direction);
+      moveInterval = setInterval(() => movePlayer(direction), 80);
+    }
+
+    function stopMove() {
+      clearInterval(moveInterval);
+      horse.classList.remove('walking');
+    }
+
+    document.getElementById('tapLeft').addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      startMove('left');
+    });
+    document.getElementById('tapLeft').addEventListener('touchend', stopMove);
+    document.getElementById('tapLeft').addEventListener('touchcancel', stopMove);
+
+    document.getElementById('tapRight').addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      startMove('right');
+    });
+    document.getElementById('tapRight').addEventListener('touchend', stopMove);
+    document.getElementById('tapRight').addEventListener('touchcancel', stopMove);
+
+    // マウス操作（PC用）
+    document.getElementById('tapLeft').addEventListener('mousedown', () => startMove('left'));
+    document.getElementById('tapLeft').addEventListener('mouseup', stopMove);
+    document.getElementById('tapLeft').addEventListener('mouseleave', stopMove);
+    document.getElementById('tapRight').addEventListener('mousedown', () => startMove('right'));
+    document.getElementById('tapRight').addEventListener('mouseup', stopMove);
+    document.getElementById('tapRight').addEventListener('mouseleave', stopMove);
+
+    // 建物タップ
+    document.getElementById('buildingDojo').addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (gameState.canMove && !gameState.dojoTalked) triggerDojoEvent();
+    });
+
+    document.getElementById('buildingShrine').addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (gameState.canMove && !gameState.shrineTalked) triggerShrineEvent();
+    });
+
+    document.getElementById('npcKitataya').addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (gameState.canMove && !gameState.kitatayaTalked) triggerKitatayaEvent();
+    });
+
+    // ========== So much happy イベント ==========
+    function triggerKitatayaEvent() {
+      gameState.canMove = false;
+      stopMove();
+      showExclamation(document.getElementById('npcKitataya'));
+
+      setTimeout(() => {
+        showEventDialog({
+          speaker: 'So much happy',
+          icon: '😊',
+          text: 'ちょっと待って！\n\nあけましておめでとう！！\n新年のご挨拶、聞いていかない？',
+          choices: [
+            { text: '聞く', action: () => kitatayaGreeting() },
+            { text: '聞かない', action: () => kitatayaForceChoice(), canChange: true }
+          ]
+        });
+      }, 500);
+    }
+
+    function kitatayaForceChoice() {
+      const noBtn = document.querySelector('.choice-btn.no-btn');
+      if (noBtn) {
+        noBtn.classList.add('changing');
+        setTimeout(() => {
+          noBtn.textContent = '聞く';
+          noBtn.classList.remove('changing');
+          noBtn.classList.add('forced');
+          noBtn.onclick = () => kitatayaGreeting();
+        }, 400);
+      }
+    }
+
+    function kitatayaGreeting() {
+      showEventDialog({
+        speaker: 'So much happy',
+        icon: '🎉',
+        text: 'やったー！聞いてくれるんだ！\n\n🎍 あけましておめでとうございます！ 🎍\n\n今年も皆さんにとって\nSo much happy な一年になりますように！\n\n受験生の皆さん、最後まで諦めずに\n頑張っていきましょう！！\n\n📺 新年のメッセージ動画も見ていってね！',
+        choices: [{ text: '動画を見る！', action: () => {
+          gameState.kitatayaTalked = true;
+          gameState.canMove = true;
+          closeEventDialog();
+          // So much happyのYouTubeリンク（実際のURLに変更）
+          window.open('https://youtu.be/Rl6WnNdDf4g', '_blank');
+        }}]
+      });
+    }
+
+    // ========== 神社（時事問題）イベント ==========
+    function triggerShrineEvent() {
+      gameState.canMove = false;
+      stopMove();
+      showExclamation(document.getElementById('buildingShrine'));
+
+      setTimeout(() => {
+        showEventDialog({
+          speaker: '神主',
+          icon: '⛩️',
+          text: 'おお、参拝者よ。\n\nここは時事問題神社じゃ。\n\n2025年の時事問題クイズに\nチャレンジしていかぬか？\n\n❓ 全40問\n⏱️ 約15分\n\n時事を知る者に、合格の神様は微笑むぞ！\n\n🚨 札幌日大中受験者は必須じゃ！',
+          choices: [
+            { text: 'やっていく', action: () => {
+              gameState.shrineTalked = true;
+              gameState.canMove = true;
+              closeEventDialog();
+              // 実際のリンクに変更
+              window.open('https://yoshimarch.github.io/2026geisyunworldnews/', '_blank');
+            }},
+            { text: 'やらない', action: () => {
+              showEventDialog({
+                speaker: '神主',
+                icon: '⛩️',
+                text: 'そうか、また気が向いたら来るがよい。\n\n合格祈願、しておくぞ！ 🙏',
+                choices: [{ text: '先に進む', action: () => {
+                  gameState.shrineTalked = true;
+                  gameState.canMove = true;
+                  closeEventDialog();
+                }}]
+              });
+            }}
+          ]
+        });
+      }, 500);
+    }
+
+    // ========== 過去問道場イベント ==========
+    function triggerDojoEvent() {
+      gameState.canMove = false;
+      stopMove();
+      showExclamation(document.getElementById('buildingDojo'));
+
+      setTimeout(() => {
+        showEventDialog({
+          speaker: '道場長',
+          icon: '🥋',
+          text: 'そこの者、待たれよ！\n\nここは過去問道場じゃ。\n\n正答率の集計に協力してくれぬか？\n\n君の結果を入力してもらえると、\n全体の傾向が見えて皆の役に立つのじゃ。',
+          choices: [
+            { text: '協力する', action: dojoCooperateWarning },
+            { text: 'やらない', action: dojoDecline }
+          ]
+        });
+      }, 500);
+    }
+
+    function dojoCooperateWarning() {
+      showEventDialog({
+        speaker: '道場長',
+        icon: '🥋',
+        text: 'おお、ありがたい！\n\n⚠️ ただし、一つ大事なことを伝えておく。\n\n━━━━━━\n【必ずニックネームで入力すること】\n実名は絶対に入れてはならぬぞ！\n━━━━━━━━━━━━━━━\n\nプライバシーを守ることが大切じゃ。',
+        choices: [
+          { text: 'わかった！入力する', action: () => {
+            gameState.dojoTalked = true;
+            gameState.englishTestDone = true;
+            gameState.canMove = true;
+            closeEventDialog();
+            // 実際のリンクに変更
+            window.open('https://text-order-project.web.app/', '_blank');
+          }},
+          { text: 'やっぱりやめる', action: dojoDecline }
+        ]
+      });
+    }
+
+    function dojoDecline() {
+      showEventDialog({
+        speaker: '道場長',
+        icon: '🥋',
+        text: 'そうか、また気が向いたら来るがよい。\n\n過去問演習、頑張るのじゃぞ！ 💪',
+        choices: [{ text: '先に進む', action: () => {
+          gameState.dojoTalked = true;
+          gameState.canMove = true;
+          closeEventDialog();
+        }}]
+      });
+    }
+
+    // ========== キタヤマイベント ==========
+    function triggerKitayamaAppearance() {
+      gameState.kitayamaAppeared = true;
+      gameState.canMove = false;
+      stopMove();
+
+      setTimeout(() => {
+        npcKitayama.classList.add('appear');
+        
+        setTimeout(() => {
+          showExclamation(npcKitayama);
+        }, 700);
+
+        setTimeout(() => {
+          showEventDialog({
+            speaker: 'キタヤマ',
+            icon: '✨',
+            text: 'Oh...?\n\nそこの君、ちょっと待ちたまえ。\n\n私の名はキタヤマ...\nこの町一番の英語講師さ。\n\nふふ、君のその目...\n英語の実力を高めたいと言っているね？',
+            choices: [{ text: '...えっ', action: kitayamaAskTest }]
+          });
+        }, 1400);
+      }, 300);
+    }
+
+    function kitayamaAskTest() {
+      showEventDialog({
+        speaker: 'キタヤマ',
+        icon: '🤔',
+        text: 'その前に一つ聞かせてもらおう。\n\n英語のテストまで...\n過去問は終わっているかい？',
+        choices: [
+          { text: 'はい、終わりました', action: kitayamaProposal },
+          { text: 'いいえ、まだです', action: kitayamaReject }
+        ]
+      });
+    }
+
+    function kitayamaReject() {
+      showEventDialog({
+        speaker: 'キタヤマ',
+        icon: '😏',
+        text: 'ふふ...\n\nまだ終わっていないのかい？\n\nそれではここを通すわけにはいかないな。\n\nまずは過去問を終わらせてくるんだ。\n話はそれからさ。\n\n✨ Stay focused ✨',
+        choices: [{ text: 'わかりました...', action: () => {
+          gameState.kitayamaAppeared = false;
+          npcKitayama.classList.remove('appear');
+          gameState.canMove = true;
+          closeEventDialog();
+        }}]
+      });
+    }
+
+    function kitayamaProposal() {
+      showEventDialog({
+        speaker: 'キタヤマ',
+        icon: '💫',
+        text: 'おお、素晴らしい！\n\n君、なかなかやるじゃないか。\n\n私のYouTubeチャンネルで\n特別な英語解説動画を公開しているんだ。\n\n聞いていくかい？\n\nきっと君の英語力が...\n✨ 輝き出す ✨ はずさ。',
+        choices: [
+          { text: '聞く', action: goToYoutube },
+          { text: '聞かない', action: kitayamaForceChoice, canChange: true }
+        ]
+      });
+    }
+
+    function kitayamaForceChoice() {
+      const noBtn = document.querySelector('.choice-btn.no-btn');
+      if (noBtn) {
+        noBtn.classList.add('changing');
+        
+        setTimeout(() => {
+          showEventDialog({
+            speaker: 'キタヤマ',
+            icon: '😏',
+            text: 'ふふ...\n\n「聞かない」だって？\n\n...\n\nそんな選択肢...\n最初からなかったのさ。',
+            choices: [
+              { text: '聞く', action: goToYoutube },
+              { text: '聞く', action: goToYoutube }
+            ]
+          });
+        }, 400);
+      }
+    }
+
+    function goToYoutube() {
+      showEventDialog({
+        speaker: 'キタヤマ',
+        icon: '🌟',
+        text: 'いい選択だ...\n\n私の美しい解説を堪能したまえ。\n\nではまた会おう...\n\n✨ Stay gorgeous ✨',
+        choices: [{ text: 'YouTubeへ', action: () => {
+          gameState.kitayamaEventDone = true;
+          closeEventDialog();
+          // 実際のYouTubeリンクに変更
+          window.open('https://www.youtube.com/', '_blank');
+          
+          // エンディングへ
+          setTimeout(() => {
+            showEnding();
+          }, 1000);
+        }}]
+      });
+    }
+
+    // ========== エンディング ==========
+    function showEnding() {
+      // BGMをフェードアウト
+      if (bgmEnabled && !bgm.paused) {
+        let fadeOut = setInterval(() => {
+          if (bgm.volume > 0.1) {
+            bgm.volume -= 0.1;
+          } else {
+            bgm.pause();
+            clearInterval(fadeOut);
+          }
+        }, 200);
+      }
+      endingOverlay.classList.add('active');
+    }
+
+    // ========== イベントダイアログ ==========
+    function showEventDialog(config) {
+      gameState.canMove = false;
+      stopMove();
+      eventOverlay.classList.add('active');
+      eventDialog.classList.add('active');
+      
+      document.getElementById('speakerIcon').textContent = config.icon;
+      document.getElementById('speakerName').textContent = config.speaker;
+      
+      const textEl = document.getElementById('eventText');
+      textEl.textContent = '';
+      typeWriter(textEl, config.text, 0);
+
+      const choicesEl = document.getElementById('eventChoices');
+      choicesEl.innerHTML = '';
+      
+      config.choices.forEach((choice) => {
+        const btn = document.createElement('button');
+        btn.className = 'choice-btn' + (choice.canChange ? ' no-btn' : '');
+        btn.textContent = choice.text;
+        btn.onclick = choice.action;
+        choicesEl.appendChild(btn);
+      });
+    }
+
+    function typeWriter(element, text, index) {
+      if (index < text.length) {
+        element.textContent += text.charAt(index);
+        setTimeout(() => typeWriter(element, text, index + 1), 25);
+      }
+    }
+
+    function closeEventDialog() {
+      eventOverlay.classList.remove('active');
+      eventDialog.classList.remove('active');
+    }
+
+    // ========== 感嘆符エフェクト ==========
+    function showExclamation(element) {
+      const rect = element.getBoundingClientRect();
+      const excl = document.createElement('div');
+      excl.className = 'exclamation';
+      excl.textContent = '❗';
+      excl.style.left = (rect.left + rect.width / 2 - 17) + 'px';
+      excl.style.top = (rect.top - 45) + 'px';
+      document.body.appendChild(excl);
+      
+      setTimeout(() => excl.remove(), 1500);
+    }
+
+    // ========== 雪・星の生成 ==========
+    function createSnowflakes() {
+      const container = document.getElementById('snowflakes');
+      const flakeChars = ['❄', '❅', '❆', '•'];
+      
+      for (let i = 0; i < 40; i++) {
+        const flake = document.createElement('div');
+        flake.className = 'snowflake';
+        flake.textContent = flakeChars[Math.floor(Math.random() * flakeChars.length)];
+        flake.style.left = Math.random() * 100 + '%';
+        flake.style.fontSize = (Math.random() * 0.7 + 0.4) + 'em';
+        flake.style.animationDuration = (Math.random() * 5 + 6) + 's';
+        flake.style.animationDelay = (Math.random() * 10) + 's';
+        container.appendChild(flake);
+      }
+    }
+
+    function createStars() {
+      const container = document.getElementById('stars');
+      
+      for (let i = 0; i < 60; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        star.style.animationDelay = (Math.random() * 2) + 's';
+        container.appendChild(star);
+      }
+    }
+
+    // ========== キーボード操作（PC用） ==========
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') movePlayer('left');
+      else if (e.key === 'ArrowRight') movePlayer('right');
+    });
+
+    // ========== BGM制御 ==========
+    const bgm = document.getElementById('bgm');
+    const bgmBtn = document.getElementById('bgmBtn');
+    const bgmPrompt = document.getElementById('bgmPrompt');
+    let bgmEnabled = false;
+
+    function startWithBGM() {
+      bgmEnabled = true;
+      bgm.volume = 0.5; // 音量50%
+      bgm.play().catch(e => console.log('BGM再生エラー:', e));
+      bgmBtn.textContent = '🔊 BGM';
+      bgmBtn.classList.add('playing');
+      bgmPrompt.classList.add('hidden');
+    }
+
+    function startWithoutBGM() {
+      bgmEnabled = false;
+      bgmPrompt.classList.add('hidden');
+    }
+
+    function toggleBGM() {
+      if (bgm.paused) {
+        bgm.play().catch(e => console.log('BGM再生エラー:', e));
+        bgmBtn.textContent = '🔊 BGM';
+        bgmBtn.classList.add('playing');
+        bgmEnabled = true;
+      } else {
+        bgm.pause();
+        bgmBtn.textContent = '🔇 BGM';
+        bgmBtn.classList.remove('playing');
+        bgmEnabled = false;
+      }
+    }
+
+    // ========== 初期化 ==========
+    function init() {
+      createSnowflakes();
+      createStars();
+      player.style.left = gameState.playerX + '%';
+      horse.classList.add('flip');
+    }
+
+    init();
+  </script>
+</body>
+</html>
