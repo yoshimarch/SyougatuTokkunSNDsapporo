@@ -113,13 +113,6 @@
 
     .tap-area:active .tap-indicator { opacity: 0.5; }
 
-    /* イベント中はタップエリアを無効化 */
-    .event-overlay.active ~ .game-container .tap-area,
-    body.event-active .tap-area {
-      pointer-events: none;
-      z-index: 0;
-    }
-
     /* 背景の山々 */
     .mountains {
       position: absolute;
@@ -1033,31 +1026,6 @@
       }
     }
 
-    /* スマホ横向き - ボタンを確実にタップできるように */
-    @media screen and (max-height: 500px) {
-      .event-dialog {
-        max-height: 95vh;
-      }
-      
-      .event-dialog-content {
-        max-height: 40vh;
-        overflow-y: auto;
-      }
-      
-      .event-dialog-choices {
-        position: relative;
-        z-index: 400;
-        background: #000;
-        padding: 10px 15px;
-      }
-      
-      .choice-btn {
-        position: relative;
-        z-index: 401;
-        pointer-events: auto;
-      }
-    }
-
     /* 感嘆符エフェクト */
     .exclamation {
       position: fixed;
@@ -1592,7 +1560,7 @@
       <div class="kitataya-body">
         <div class="kitataya-tie"></div>
       </div>
-      <div class="npc-name">So happy</div>
+      <div class="npc-name">So much happy</div>
     </div>
 
     <!-- NPC: キタヤマ -->
@@ -1660,7 +1628,7 @@
     <div class="title-box">
       <div class="year-badge">🐴 2026</div>
       <h1>正月特訓のまち　駿ポロ</h1>
-      <div class="subtitle">〜 馬力全開で合格を目指せ 〜</div>
+      <div class="subtitle">〜 合格を目指す冒険へ 〜</div>
     </div>
     <div class="controls-hint">
       <p>📱 画面の左右をタップで移動</p>
@@ -1701,7 +1669,7 @@
   <!-- BGM開始プロンプト -->
   <div class="bgm-prompt" id="bgmPrompt">
     <div class="bgm-prompt-content">
-      <div class="bgm-prompt-title">🎍 正月特訓のまち　駿ポロ 🎍</div>
+      <div class="bgm-prompt-title">🎍 正月特訓の町 🎍</div>
       <div class="bgm-prompt-horse">🐴</div>
       <div class="bgm-prompt-text">BGMを再生しますか？</div>
       <button class="bgm-prompt-btn" onclick="startWithBGM()">🔊 BGMあり</button>
@@ -1867,7 +1835,7 @@
 
       setTimeout(() => {
         showEventDialog({
-          speaker: 'So happy',
+          speaker: 'So much happy',
           icon: '😊',
           text: 'ちょっと待って！\n\nあけましておめでとう！！\n新年のご挨拶、聞いていかない？',
           choices: [
@@ -1893,7 +1861,7 @@
 
     function kitatayaGreeting() {
       showEventDialog({
-        speaker: 'So happy',
+        speaker: 'So much happy',
         icon: '🎉',
         text: 'やったー！聞いてくれるんだ！\n\n🎍 あけましておめでとうございます！ 🎍\n\n今年も皆さんにとって\nSo much happy な一年になりますように！\n\n受験生の皆さん、最後まで諦めずに\n頑張っていきましょう！！\n\n📺 新年のメッセージ動画も見ていってね！',
         choices: [{ text: '動画を見る！', action: () => {
@@ -1952,10 +1920,10 @@
         showEventDialog({
           speaker: '道場長',
           icon: '🥋',
-          text: 'そこの者、待たれよ！\n\nここは過去問道場じゃ。\n\n正答率の集計に協力してくれぬか？\n\n君の結果を入力してもらえると、\n全体の傾向が見えて皆の役に立つのじゃ。',
+          text: 'そこの者、待たれよ！\n\nここは過去問道場じゃ。\n\n君が中３なら正答率の集計に協力してくれぬか？\n\n君の結果を入力してもらえると、\n全体の傾向が見えて皆の役に立つのじゃ。',
           choices: [
             { text: '協力する', action: dojoCooperateWarning },
-            { text: 'やらない', action: dojoDecline }
+            { text: 'やらない　または　私は小６', action: dojoDecline }
           ]
         });
       }, 500);
@@ -1965,7 +1933,7 @@
       showEventDialog({
         speaker: '道場長',
         icon: '🥋',
-        text: 'おお、ありがたい！\n\n⚠️ ただし、一つ大事なことを伝えておく。\n\n━━━━━━━━━━━━━━━\n【必ずニックネームで入力すること】\n実名は絶対に入れてはならぬぞ！\n━━━━━━━━━━━━━━━\n\nプライバシーを守ることが大切じゃ。',
+        text: 'おお、ありがたい！\n\n⚠️ ただし、一つ大事なことを伝えておく。\n\n━━━━\n【必ずニックネームで入力すること。ニックネームとパスワードは書き留めておくのだ。】\n実名は絶対に入れてはならぬぞ！\n━━━━━━━━━━━━━━━\n\nプライバシーを守ることが大切じゃ。',
         choices: [
           { text: 'わかった！入力する', action: () => {
             gameState.dojoTalked = true;
@@ -2010,7 +1978,7 @@
           showEventDialog({
             speaker: 'キタヤマ',
             icon: '✨',
-            text: 'Oh...?\n\nそこの君、ちょっと待ちたまえ。\n\n私の名はキタヤマ...\nこの町一番の英語講師さ。\n\nふふ、君のその目...\n英語の実力を高めたいと言っているね？',
+            text: 'Oh...?\n\nそこの君、ちょっと待ちたまえ。\n\n私の名は喜多山...\nこの町一番の英語講師さ。\n\nふふ、君のその目...\n英語の実力を高めたいと言っているね？',
             choices: [{ text: '...えっ', action: kitayamaAskTest }]
           });
         }, 1400);
@@ -2165,9 +2133,9 @@
 
     function goToYoutube() {
       showEventDialog({
-        speaker: 'キタトン',
+        speaker: 'キタヤマ',
         icon: '🌟',
-        text: 'いい選択だ...\n\n私の美しい解説を堪能したまえ。\n\nではまた会おう...喜多トン・・so happyなんてな\n\n✨ Stay gorgeous ✨',
+        text: 'いい選択だ...\n\n私の美しい解説を堪能したまえ。\n\nではまた会おう...\n\n✨ Stay gorgeous ✨',
         choices: [{ text: '動画を見る', action: () => {
           gameState.kitayamaEventDone = true;
           closeEventDialog();
@@ -2199,7 +2167,6 @@
     function showEventDialog(config) {
       gameState.canMove = false;
       stopMove();
-      document.body.classList.add('event-active');
       eventOverlay.classList.add('active');
       eventDialog.classList.add('active');
       
@@ -2230,7 +2197,6 @@
     }
 
     function closeEventDialog() {
-      document.body.classList.remove('event-active');
       eventOverlay.classList.remove('active');
       eventDialog.classList.remove('active');
     }
@@ -2452,25 +2418,6 @@
       document.addEventListener('dragstart', (e) => {
         e.preventDefault();
         return false;
-      });
-      
-      // 画面回転時にレイアウトを再調整
-      window.addEventListener('orientationchange', () => {
-        setTimeout(() => {
-          window.scrollTo(0, 0);
-          // ダイアログが開いている場合は再描画
-          if (eventDialog.classList.contains('active')) {
-            eventDialog.style.display = 'none';
-            setTimeout(() => {
-              eventDialog.style.display = 'flex';
-            }, 50);
-          }
-        }, 100);
-      });
-      
-      // リサイズ時も対応
-      window.addEventListener('resize', () => {
-        window.scrollTo(0, 0);
       });
     }
 
