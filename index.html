@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>正月特訓の町 - 2026</title>
+  <title>正月特訓のまち - 2026</title>
   <link href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap" rel="stylesheet">
   <style>
     * {
@@ -1034,7 +1034,7 @@
   <!-- BGM -->
   <audio id="bgm" loop>
     <!-- ここにBGMファイルのパスを指定してください -->
-    <!-- 例: <source src="bgm2.mp3" type="audio/mpeg"> -->
+    <!-- 例: <source src="bgm.mp3" type="audio/mpeg"> -->
     <!-- 例: <source src="bgm.mp4" type="audio/mp4"> -->
     <!-- 例: <source src="https://example.com/bgm.mp3" type="audio/mpeg"> -->
     <source src="bgm2.mp3" type="audio/mpeg">
@@ -1178,8 +1178,8 @@
   <div class="ui-overlay">
     <div class="title-box">
       <div class="year-badge">🐴 2026</div>
-      <h1>正月特訓の町</h1>
-      <div class="subtitle">〜 合格を目指す冒険へ 〜</div>
+      <h1>正月特訓のまち（駿台小中学部ver）</h1>
+      <div class="subtitle">〜 合格を目指せ 〜</div>
     </div>
     <div class="controls-hint">
       <p>📱 画面の左右をタップで移動</p>
@@ -1202,7 +1202,7 @@
   <!-- BGM開始プロンプト -->
   <div class="bgm-prompt" id="bgmPrompt">
     <div class="bgm-prompt-content">
-      <div class="bgm-prompt-title">🎍 正月特訓の町 🎍</div>
+      <div class="bgm-prompt-title">🎍 正月特訓のまち 🎍</div>
       <div class="bgm-prompt-horse">🐴</div>
       <div class="bgm-prompt-text">BGMを再生しますか？</div>
       <button class="bgm-prompt-btn" onclick="startWithBGM()">🔊 BGMあり</button>
@@ -1394,7 +1394,7 @@
 
     function kitatayaGreeting() {
       showEventDialog({
-        speaker: 'So much happy',
+        speaker: 'So much happy（喜多山さん）',
         icon: '🎉',
         text: 'やったー！聞いてくれるんだ！\n\n🎍 あけましておめでとうございます！ 🎍\n\n今年も皆さんにとって\nSo much happy な一年になりますように！\n\n受験生の皆さん、最後まで諦めずに\n頑張っていきましょう！！\n\n📺 新年のメッセージ動画も見ていってね！',
         choices: [{ text: '動画を見る！', action: () => {
@@ -1466,7 +1466,7 @@
       showEventDialog({
         speaker: '道場長',
         icon: '🥋',
-        text: 'おお、ありがたい！\n\n⚠️ ただし、一つ大事なことを伝えておく。\n\n━━━━━━\n【必ずニックネームで入力すること】\n実名は絶対に入れてはならぬぞ！\n━━━━━━━━━━━━━━━\n\nプライバシーを守ることが大切じゃ。',
+        text: 'おお、ありがたい！\n\n⚠️ ただし、一つ大事なことを伝えておく。\n\n━━━\n【必ずニックネームで入力すること。パスワードはメモしておくこと。】\n実名は絶対に入れてはならぬぞ！\n━━━━━━━━━━━━━━━\n\nプライバシーを守ることが大切じゃ。',
         choices: [
           { text: 'わかった！入力する', action: () => {
             gameState.dojoTalked = true;
@@ -1474,7 +1474,7 @@
             gameState.canMove = true;
             closeEventDialog();
             // 実際のリンクに変更
-            window.open('https://text-order-project.web.app/', '_blank');
+            window.open('https://example.com/kakomon-input', '_blank');
           }},
           { text: 'やっぱりやめる', action: dojoDecline }
         ]
@@ -1525,7 +1525,8 @@
         text: 'その前に一つ聞かせてもらおう。\n\n英語のテストまで...\n過去問は終わっているかい？',
         choices: [
           { text: 'はい、終わりました', action: kitayamaProposal },
-          { text: 'いいえ、まだです', action: kitayamaReject }
+          { text: 'いいえ、まだです', action: kitayamaReject },
+          { text: 'いや、私は小6です', action: kitayamaForElementary }
         ]
       });
     }
@@ -1540,6 +1541,94 @@
           npcKitayama.classList.remove('appear');
           gameState.canMove = true;
           closeEventDialog();
+        }}]
+      });
+    }
+
+    // ========== 小6向け特別ルート ==========
+    function kitayamaForElementary() {
+      showEventDialog({
+        speaker: 'キタヤマ',
+        icon: '✨',
+        text: 'おお...小6かい？\n\nつまり中学受験生というわけだ。\n\nふふ、それなら話は別だ。\n\n君のような若き挑戦者に\n私から特別なメッセージを贈ろう。',
+        choices: [{ text: '聞かせてください', action: kitayamaElementaryMessage }]
+      });
+    }
+
+    function kitayamaElementaryMessage() {
+      showEventDialog({
+        speaker: 'キタヤマ',
+        icon: '🌟',
+        text: '中学受験は人生で最初の大きな挑戦だ。\n\n不安もあるだろう。\nでも、ここまで頑張ってきた君なら大丈夫。\n\n自分を信じて、最後まで諦めるな。\n\n...もう少し聞いていくかい？',
+        choices: [
+          { text: 'まだ聞く', action: kitayamaElementaryGoodEnding },
+          { text: '聞くのをやめる', action: kitayamaElementaryForceChoice, canChange: true }
+        ]
+      });
+    }
+
+    function kitayamaElementaryForceChoice() {
+      const noBtn = document.querySelector('.choice-btn.no-btn');
+      if (noBtn) {
+        noBtn.classList.add('changing');
+        setTimeout(() => {
+          noBtn.textContent = 'もっと聞きたい';
+          noBtn.classList.remove('changing');
+          noBtn.classList.add('forced');
+          noBtn.onclick = kitayamaElementaryLongMessage;
+        }, 400);
+      }
+    }
+
+    function kitayamaElementaryGoodEnding() {
+      showEventDialog({
+        speaker: 'キタヤマ',
+        icon: '💫',
+        text: 'よし...\n\nその姿勢があれば大丈夫だ。\n\n君の合格を心から祈っているよ。\n\n✨ Stay brilliant ✨\n\n...さあ、行きたまえ。\n春はもうすぐそこだ。',
+        choices: [{ text: 'ありがとうございました！', action: () => {
+          gameState.kitayamaEventDone = true;
+          closeEventDialog();
+          setTimeout(() => showEnding(), 800);
+        }}]
+      });
+    }
+
+    function kitayamaElementaryLongMessage() {
+      showEventDialog({
+        speaker: 'キタヤマ',
+        icon: '✨',
+        text: 'ふふ、そうかそうか...\n聞きたいか。よろしい。\n\n受験というのはね、受験の経験で得た「努力する力」「諦めない心」「計画を立てて実行する力」...これらは一生の財産になる。',
+        choices: [{ text: '...', action: kitayamaElementaryLongMessage2 }]
+      });
+    }
+
+    function kitayamaElementaryLongMessage2() {
+      showEventDialog({
+        speaker: 'キタヤマ',
+        icon: '💫',
+        text: '試験当日は緊張するだろう。でも、それは君だけじゃない。全員が同じ気持ちだ。深呼吸して、いつも通りの自分を出せばいい。分からない問題があってもあせるな。できる問題を確実に。',
+        choices: [{ text: '...なるほど', action: kitayamaElementaryLongMessage3 }]
+      });
+    }
+
+    function kitayamaElementaryLongMessage3() {
+      showEventDialog({
+        speaker: 'キタヤマ',
+        icon: '😅',
+        text: 'そして何より大切なのは...\n\n体調管理だ。睡眠をしっかり取って...\n\n手洗いうがいを忘れずに...\n\n......ふぅ。\n\n...さすがに喋りすぎた。\n\n私としたことが...少し疲れたよ...',
+        choices: [{ text: 'お疲れさまです...', action: kitayamaElementaryTiredEnding }]
+      });
+    }
+
+    function kitayamaElementaryTiredEnding() {
+      showEventDialog({
+        speaker: 'キタヤマ',
+        icon: '😌',
+        text: 'まあ...君のためだからね...\n\n私の言葉、少しでも届いていれば嬉しい。\n\n...さあ、もう行きなさい。\n\n合格を祈っているよ。\n\n✨ ...Stay...gorgeous... ✨',
+        choices: [{ text: 'ありがとうございました！', action: () => {
+          gameState.kitayamaEventDone = true;
+          closeEventDialog();
+          setTimeout(() => showEnding(), 800);
         }}]
       });
     }
