@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>正月特訓の町 - 2026</title>
+  <title>正月特訓のまち 駿ポロ - 2026</title>
   <link href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap" rel="stylesheet">
   <style>
     * {
@@ -623,7 +623,7 @@
       cursor: pointer;
     }
 
-    /* So much happy */
+    /* Super happy */
     .npc-kitataya {
       bottom: 95px;
       right: 22%;
@@ -1547,7 +1547,7 @@
     <!-- 地面 -->
     <div class="ground"></div>
 
-    <!-- NPC: So much happy -->
+    <!-- NPC: Super happy -->
     <div class="npc npc-kitataya" id="npcKitataya">
       <div class="kitataya-head">
         <div class="kitataya-hair"></div>
@@ -1560,7 +1560,7 @@
       <div class="kitataya-body">
         <div class="kitataya-tie"></div>
       </div>
-      <div class="npc-name">So much happy</div>
+      <div class="npc-name">Super happy</div>
     </div>
 
     <!-- NPC: キタヤマ -->
@@ -1627,7 +1627,7 @@
   <div class="ui-overlay">
     <div class="title-box">
       <div class="year-badge">🐴 2026</div>
-      <h1>正月特訓のまち　駿ポロ</h1>
+      <h1>正月特訓のまち 駿ポロ</h1>
       <div class="subtitle">〜 合格を目指す冒険へ 〜</div>
     </div>
     <div class="controls-hint">
@@ -1669,7 +1669,7 @@
   <!-- BGM開始プロンプト -->
   <div class="bgm-prompt" id="bgmPrompt">
     <div class="bgm-prompt-content">
-      <div class="bgm-prompt-title">🎍 正月特訓の町 🎍</div>
+      <div class="bgm-prompt-title">🎍 正月特訓のまち　駿ポロ 🎍</div>
       <div class="bgm-prompt-horse">🐴</div>
       <div class="bgm-prompt-text">BGMを再生しますか？</div>
       <button class="bgm-prompt-btn" onclick="startWithBGM()">🔊 BGMあり</button>
@@ -1693,7 +1693,7 @@
     // ========== ゲーム状態管理 ==========
     // イベントトリガー位置（右から左へ）
     // 88% スタート
-    // 72% So much happy
+    // 72% Super happy
     // 55% 神社
     // 38% 道場
     // 18% キタヤマ登場
@@ -1702,7 +1702,7 @@
       playerX: 88,
       canMove: true,
       // イベントフラグ
-      kitatayaTalked: false,      // So much happyと話した
+      kitatayaTalked: false,      // Supper happyと話した
       shrineTalked: false,        // 神社で話した
       dojoTalked: false,          // 道場で話した
       kitayamaAppeared: false,    // キタヤマ登場済み
@@ -1740,7 +1740,7 @@
         const newX = gameState.playerX - step;
         
         // 各トリガーポイントのチェック（左に進む時）
-        // So much happy
+        // Super happy
         if (!gameState.kitatayaTalked && oldX > TRIGGER.KITATAYA && newX <= TRIGGER.KITATAYA) {
           triggerKitatayaEvent();
           return;
@@ -1827,7 +1827,7 @@
       if (gameState.canMove && !gameState.kitatayaTalked) triggerKitatayaEvent();
     });
 
-    // ========== So much happy イベント ==========
+    // ========== Super happy イベント ==========
     function triggerKitatayaEvent() {
       gameState.canMove = false;
       stopMove();
@@ -1835,7 +1835,7 @@
 
       setTimeout(() => {
         showEventDialog({
-          speaker: 'So much happy',
+          speaker: 'Super happy',
           icon: '😊',
           text: 'ちょっと待って！\n\nあけましておめでとう！！\n新年のご挨拶、聞いていかない？',
           choices: [
@@ -1861,15 +1861,15 @@
 
     function kitatayaGreeting() {
       showEventDialog({
-        speaker: 'So much happy',
+        speaker: 'Super happy',
         icon: '🎉',
-        text: 'やったー！聞いてくれるんだ！\n\n🎍 あけましておめでとうございます！ 🎍\n\n今年も皆さんにとって\nSo much happy な一年になりますように！\n\n受験生の皆さん、最後まで諦めずに\n頑張っていきましょう！！\n\n📺 新年のメッセージ動画も見ていってね！',
+        text: 'やったー！聞いてくれるんだ！\n\n🎍 あけましておめでとうございます！ 🎍\n\n今年も皆さんにとって\nSuper happy な一年になりますように！\n\n受験生の皆さん、最後まで諦めずに\n頑張っていきましょう！！\n\n📺 新年のメッセージ動画も見ていってね！',
         choices: [{ text: '動画を見る！', action: () => {
           gameState.kitatayaTalked = true;
           gameState.canMove = true;
           closeEventDialog();
           // 埋め込み動画を表示
-          openVideo(VIDEO_IDS.soMuchHappy, '🎉 So much happy 新年メッセージ', null);
+          openVideo(VIDEO_IDS.soMuchHappy, '🎉 Super happy 新年メッセージ', null);
         }}]
       });
     }
@@ -2258,7 +2258,7 @@
 
     // ========== YouTube動画設定 ==========
     const VIDEO_IDS = {
-      soMuchHappy: 'Rl6WnNdDf4g',  // So much happyの挨拶動画
+      soMuchHappy: 'Rl6WnNdDf4g',  // Super happyの挨拶動画
       kitayama: 'XpB7llDefjg'       // キタヤマの英語解説
     };
 
