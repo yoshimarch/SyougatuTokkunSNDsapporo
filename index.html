@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>正月特訓のまち駿ポロ - 2026</title>
+  <title>正月特訓の町 - 2026</title>
   <link href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap" rel="stylesheet">
   <style>
     * {
@@ -427,7 +426,7 @@
     /* プレイヤー（フリスク風キャラクター） */
     .player {
       position: absolute;
-      bottom: 85px;
+      bottom: 100px;
       left: 88%;
       transform: translateX(-50%);
       z-index: 60;
@@ -570,23 +569,10 @@
       border-radius: 0 0 2px 2px;
     }
 
-    /* 足元の影 */
-    .frisk::after {
-      content: '';
-      position: absolute;
-      bottom: -4px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 24px;
-      height: 6px;
-      background: rgba(0, 0, 0, 0.3);
-      border-radius: 50%;
-    }
-
     /* スマホ向けプレイヤー調整 */
     @media screen and (max-width: 480px) {
       .player {
-        bottom: 65px;
+        bottom: 80px;
       }
       
       .frisk {
@@ -597,21 +583,13 @@
         transform: scale(1.2) scaleX(-1);
       }
       
-      .frisk.walking {
-        animation: friskWalkSp 0.3s steps(2) infinite;
-      }
-      
-      .frisk.flip.walking {
-        animation: friskWalkFlipSp 0.3s steps(2) infinite;
-      }
-      
-      @keyframes friskWalkSp {
+      @keyframes friskWalk {
         0% { transform: scale(1.2) translateY(0); }
         50% { transform: scale(1.2) translateY(-3px); }
         100% { transform: scale(1.2) translateY(0); }
       }
       
-      @keyframes friskWalkFlipSp {
+      @keyframes friskWalkFlip {
         0% { transform: scale(1.2) scaleX(-1) translateY(0); }
         50% { transform: scale(1.2) scaleX(-1) translateY(-3px); }
         100% { transform: scale(1.2) scaleX(-1) translateY(0); }
@@ -2011,7 +1989,7 @@
   <div class="ui-overlay">
     <div class="title-box">
       <div class="year-badge">🐴 2026</div>
-      <h1>正月特訓のまち駿ポロ</h1>
+      <h1>正月特訓の町</h1>
       <div class="subtitle">〜 合格を目指す冒険へ 〜</div>
     </div>
     <div class="controls-hint">
@@ -2053,7 +2031,7 @@
   <!-- BGM開始プロンプト -->
   <div class="bgm-prompt" id="bgmPrompt">
     <div class="bgm-prompt-content">
-      <div class="bgm-prompt-title">🎍 正月特訓のまち駿ポロ 🎍</div>
+      <div class="bgm-prompt-title">🎍 正月特訓の町 🎍</div>
       <div class="bgm-prompt-frisk">
         <div class="frisk-hair"></div>
         <div class="frisk-face"></div>
@@ -2084,7 +2062,7 @@
         <div class="tutorial-title">これがキミだ！</div>
         <p class="tutorial-text">
           キミはこの子となって<br>
-          正月特訓のまち駿ポロを冒険するぞ！
+          正月特訓タウンを冒険するぞ！
         </p>
         <button class="tutorial-btn" onclick="nextTutorialStep()">つぎへ →</button>
       </div>
