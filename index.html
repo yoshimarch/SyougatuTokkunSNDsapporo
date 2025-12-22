@@ -426,7 +426,7 @@
     /* プレイヤー（フリスク風キャラクター） */
     .player {
       position: absolute;
-      bottom: 65px;
+      bottom: 85px;
       left: 88%;
       transform: translateX(-50%);
       z-index: 60;
@@ -585,7 +585,7 @@
     /* スマホ向けプレイヤー調整 */
     @media screen and (max-width: 480px) {
       .player {
-        bottom: 50px;
+        bottom: 65px;
       }
       
       .frisk {
@@ -2321,7 +2321,7 @@
         showEventDialog({
           speaker: 'Super happy',
           icon: '😊',
-          text: 'ちょっと待って！\n\nあけましておめでとう！！\nぼくの新年の挨拶、聞いていかない？',
+          text: 'ちょっと待って！\n\nあけましておめでとう！！\n新年のご挨拶、聞いていかない？',
           choices: [
             { text: '聞く', action: () => kitatayaGreeting() },
             { text: '聞かない', action: () => kitatayaForceChoice(), canChange: true }
