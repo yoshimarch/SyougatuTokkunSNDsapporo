@@ -1874,6 +1874,26 @@
       font-size: 16px;
     }
 
+    /* ショート動画用（縦長） */
+    .video-modal.shorts .video-container {
+      max-width: 350px;
+      max-height: 80vh;
+      width: 350px;
+      height: 622px;
+      aspect-ratio: 9 / 16;
+    }
+
+    .video-modal.shorts .video-modal-header {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    .video-modal.shorts .video-close-btn {
+      margin-top: 10px;
+      padding: 12px 35px;
+      font-size: 14px;
+    }
+
     /* スマホ向け動画モーダル */
     @media screen and (max-width: 480px) {
       .video-modal {
@@ -1906,6 +1926,16 @@
       
       .video-modal.large .video-close-btn {
         padding: 12px 30px;
+        font-size: 14px;
+      }
+      
+      .video-modal.shorts .video-container {
+        max-width: 280px;
+        width: 280px;
+        height: 498px;
+      }
+      
+      .video-modal.shorts .video-modal-header {
         font-size: 14px;
       }
     }
@@ -2201,7 +2231,7 @@
     <div class="event-dialog-choices" id="eventChoices"></div>
   </div>
 
-  <!-- 埋め込みモーダル -->
+  <!-- YouTube埋め込みモーダル -->
   <div class="video-modal" id="videoModal">
     <div class="video-modal-header" id="videoModalTitle">📺 動画を見る</div>
     <div class="video-container">
@@ -2310,7 +2340,7 @@
     // イベントトリガー位置（右から左へ）
     // 88% スタート
     // 72% Super happy
-    // 60% 神社
+    // 55% 神社
     // 38% 道場
     // 18% キタヤマ登場
     
@@ -2329,7 +2359,7 @@
     // トリガー位置
     const TRIGGER = {
       KITATAYA: 72,
-      SHRINE: 60,
+      SHRINE: 65,
       DOJO: 38,
       KITAYAMA: 18
     };
@@ -2587,7 +2617,7 @@
       showEventDialog({
         speaker: '道場長',
         icon: '🥋',
-        text: 'おお、ありがたい！\n\n⚠️ ただし、一つ大事なことを伝えておく。\n\n━━━━━━━━━━━━━━━\n【必ずニックネームで入力すること】\n実名は絶対に入れてはならぬぞ！\n━━━━━━━━━━━━━━━\n\nプライバシーを守ることが大切じゃ。',
+        text: 'おお、ありがたい！\n\n⚠️ ただし、一つ大事なことを伝えておく。\n\n━━━━━━━━━━━━━━━\n【必ずニックネームで入力すること。パスワードは6文字以内の半角英数。メモをとっておく。】\n実名は絶対に入れてはならぬぞ！\n━━━━━━━━━━━━━━━\n\nプライバシーを守ることが大切じゃ。',
         choices: [
           { text: 'わかった！入力する', action: () => {
             gameState.dojoTalked = true;
@@ -2643,7 +2673,7 @@
       showEventDialog({
         speaker: 'キタヤマ',
         icon: '🤔',
-        text: 'その前に一つ聞かせてもらおう。\n\n中３正月特訓の「英語」の...\n過去問は終わっているかい？',
+        text: 'その前に一つ聞かせてもらおう。\n\n英語のテストまで...\n過去問は終わっているかい？',
         choices: [
           { text: 'はい、終わりました', action: kitayamaProposal },
           { text: 'いいえ、まだです', action: kitayamaReject },
@@ -2704,7 +2734,7 @@
         showEventDialog({
           speaker: 'Mr.Mori',
           icon: '👨‍🏫',
-          text: 'やあ、初めまして！\n\n私はMr.Mori。\nキタヤマの友人さ。\n\n札幌日大中を目指しているんだって？\n素晴らしい志だね！\n\n私のYouTube動画で\n札幌日大中の入試に向けてアドバイスをしているんだ。\n\n見ていくかい？',
+          text: 'やあ、初めまして！\n\n私はMr.Mori。\nキタヤマの友人さ。\n\n札幌日大中を目指しているんだって？\n素晴らしい志だね！\n\n私のYouTube動画で\n札幌日大中の入試についてメッセージを出したんだ。\n\n見ていくかい？',
           choices: [
             { text: 'はい！', action: moriGoToYoutube }
           ]
@@ -2716,14 +2746,14 @@
       showEventDialog({
         speaker: 'Mr.Mori',
         icon: '😊',
-        text: 'よし！\n\nこの動画を見れば、\n札幌日大中の入試が\nグッと身近に感じられるはずだ。\n\n頑張れ、未来の札幌日大中生！\n\n🌸 春に会おう！ 🌸',
+        text: 'よし！\n\nこの動画を見れば、\n札幌日大中の入試が\nグッと身近に感じられるはずだ。\n\n頑張れ、未来の札幌日大生！\n\n🌸 春に会おう！ 🌸',
         choices: [{ text: '動画を見る', action: () => {
           gameState.kitayamaEventDone = true;
           closeEventDialog();
-          // Mr.MoriのYouTube動画（大きい画面）
-          openVideo(VIDEO_IDS.mori, '👨‍🏫 Mr.Mori 札幌日大中の受験生へ', () => {
+          // Mr.MoriのYouTube動画（ショート動画・縦長）
+          openVideo(VIDEO_IDS.mori, '👨‍🏫 Mr.Mori 札幌日大中対策', () => {
             setTimeout(() => showEnding(), 500);
-          }, true);
+          }, false, true);
         }}]
       });
     }
@@ -2983,8 +3013,8 @@
     // ========== YouTube動画設定 ==========
     const VIDEO_IDS = {
       superHappy: 'Rl6WnNdDf4g',  // Super happyの挨拶動画
-      kitayama: 'S4MIXYuiY54',     // キタヤマの英語解説
-      mori: 'qR6m-C06urQ'           // Mr.Moriの札幌日大中対策（動画IDを設定してください）
+      kitayama: 'XpB7llDefjg',     // キタヤマの英語解説
+      mori: '8nU6C3uJ42U'          // Mr.Moriの札幌日大中対策（ショート動画）
     };
 
     // ========== 安全に別ウィンドウで開く関数 ==========
@@ -3029,7 +3059,7 @@
     const videoModalTitle = document.getElementById('videoModalTitle');
     let videoCallback = null;
 
-    function openVideo(videoId, title, callback, isLarge = false) {
+    function openVideo(videoId, title, callback, isLarge = false, isShorts = false) {
       // BGMを一時停止
       if (bgmEnabled && !bgm.paused) {
         bgm.pause();
@@ -3038,11 +3068,14 @@
       videoModalTitle.textContent = title || '📺 動画を見る';
       videoIframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
       
+      // モーダルのクラスをリセット
+      videoModal.classList.remove('large', 'shorts');
+      
       // 大きいモーダルかどうか
-      if (isLarge) {
+      if (isShorts) {
+        videoModal.classList.add('shorts');
+      } else if (isLarge) {
         videoModal.classList.add('large');
-      } else {
-        videoModal.classList.remove('large');
       }
       
       videoModal.classList.add('active');
@@ -3053,6 +3086,7 @@
       videoIframe.src = '';
       videoModal.classList.remove('active');
       videoModal.classList.remove('large');
+      videoModal.classList.remove('shorts');
       
       // BGMを再開
       if (bgmEnabled) {
